@@ -38,9 +38,14 @@ const STATUS_BADGE: Record<string, string> = {
 
 export default function ClientPortal() {
   const { t } = useTranslation();
-  const currentUserRole = useAppStore(s => s.role);
-  const currentUserId = useAppStore(s => s.session?.user?.id);
-  const isBackOffice = currentUserRole === 'BACK_OFFICE' || currentUserRole === 'ADMIN';
+  const { currentUserRole, currentUserId, currentUserEmail, currentUserName, isBackOffice, isMember } = useAppStore(s => ({
+    currentUserRole: s.role,
+    currentUserId: s.session?.user?.id,
+    currentUserEmail: s.session?.user?.email,
+    currentUserName: s.session?.user?.user_metadata?.full_name || s.session?.user?.email,
+    isBackOffice: s.role === 'BACK_OFFICE' || s.role === 'ADMIN',
+    isMember: s.role === 'MEMBER',
+  }));
 
   const [statusFilter, setStatusFilter] = useState<ClientRequestStatus | 'ALL'>('ALL');
   const [moduleFilter, setModuleFilter] = useState<ClientRequestModuleType | 'ALL'>('ALL');
@@ -72,7 +77,9 @@ export default function ClientPortal() {
     if (!reqTitle) { setActionError('Title is required.'); return; }
     setActionLoading(true); setActionError(null);
     try {
-      await addRequest({ module_type: reqModule, title: reqTitle, description: reqDescription, client_name: reqClientName, client_email: reqClientEmail });
+      const finalClientName = isMember ? (reqClientName || currentUserName || currentUserEmail || '') : reqClientName;
+      const finalClientEmail = isMember ? (reqClientEmail || currentUserEmail || '') : reqClientEmail;
+      await addRequest({ module_type: reqModule, title: reqTitle, description: reqDescription, client_name: finalClientName, client_email: finalClientEmail });
       resetForm(); setShowCreateModal(false);
     } catch (err: any) { setActionError(err?.message || 'Failed to submit request.'); } finally { setActionLoading(false); }
   };
@@ -282,11 +289,11 @@ export default function ClientPortal() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('portal.clientName', 'Client Name')}</label>
-                  <input type="text" value={reqClientName} onChange={(e) => setReqClientName(e.target.value)} placeholder={t('portal.clientNamePlaceholder', 'e.g. Team France')} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                  <input type="text" value={reqClientName} onChange={(e) => setReqClientName(e.target.value)} placeholder={isMember ? (currentUserName || currentUserEmail || t('portal.clientNamePlaceholder', 'e.g. Team France')) : t('portal.clientNamePlaceholder', 'e.g. Team France')} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('portal.clientEmail', 'Client Email')}</label>
-                  <input type="email" value={reqClientEmail} onChange={(e) => setReqClientEmail(e.target.value)} placeholder={t('portal.emailPlaceholder', 'contact@team.fr')} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                  <input type="email" value={reqClientEmail} onChange={(e) => setReqClientEmail(e.target.value)} placeholder={isMember ? (currentUserEmail || t('portal.emailPlaceholder', 'contact@team.fr')) : t('portal.emailPlaceholder', 'contact@team.fr')} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                 </div>
               </div>
               <div className="pt-2 flex justify-end gap-2">

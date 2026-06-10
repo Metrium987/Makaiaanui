@@ -213,6 +213,7 @@ export interface ClientRequest {
   approved_by: string | null;
   approved_at: string | null;
   rejection_reason: string;
+  created_by: string | null;
   created_at: string;
   updated_at: string;
 }

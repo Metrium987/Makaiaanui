@@ -1056,6 +1056,7 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const userId = useAppStore(s => s.session?.user?.id);
 
   const fetchRequests = async (p: number, status?: string, module?: string) => {
     try {
@@ -1098,7 +1099,7 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('client_requests')
-      .insert({ ...req, organization_id: organizationId, status: 'PENDING' })
+      .insert({ ...req, organization_id: organizationId, status: 'PENDING', created_by: userId })
       .select().single();
     if (error) throw error;
     setRequests(prev => [data, ...prev]);

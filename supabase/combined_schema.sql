@@ -546,6 +546,7 @@ CREATE TABLE IF NOT EXISTS public.client_requests (
   status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED', 'IN_PROGRESS', 'COMPLETED')),
   client_name TEXT DEFAULT '',
   client_email TEXT DEFAULT '',
+  created_by UUID REFERENCES auth.users(id),
   details JSONB DEFAULT '{}'::jsonb,
   approved_by UUID REFERENCES public.profiles(id),
   approved_at TIMESTAMPTZ,
@@ -561,6 +562,11 @@ CREATE INDEX IF NOT EXISTS idx_client_requests_status ON public.client_requests(
 CREATE INDEX IF NOT EXISTS idx_client_requests_module ON public.client_requests(module_type);
 CREATE INDEX IF NOT EXISTS idx_client_requests_created ON public.client_requests(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_client_requests_org_status ON public.client_requests(organization_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_client_requests_created_by ON public.client_requests(created_by);
+
+-- Ensure created_by column exists on existing tables (idempotent)
+ALTER TABLE public.client_requests ADD COLUMN IF NOT EXISTS created_by UUID REFERENCES auth.users(id);
 
 -- Auto-update trigger
 DROP TRIGGER IF EXISTS trg_set_updated_at ON public.client_requests;

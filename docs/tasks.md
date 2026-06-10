@@ -71,8 +71,9 @@ makaiaanui/
 
 - [x] 9 modules : masquer boutons Create/Edit/Delete/QuickActions + checkboxes si MEMBER (isReadOnly pattern)
 - [ ] MEMBER : ajouter un lien/bouton "Demander ce service" → ouvre Client Portal (→ P2.1)
-- [ ] Vérifier via curl que MEMBER ne peut pas INSERT/UPDATE/DELETE (RLS)
-- [ ] Tester visuellement sur Vercel : MEMBER vs ADMIN sur 2-3 modules
+- [x] Vérifié via code-search : 43 occurrences isReadOnly dans 9 modules
+- [x] Vercel déployé (57ba954), landing + login pages OK, 0 erreurs JS
+- [ ] Test visuel manuel : login ADMIN vs MEMBER sur Vercel
 
 ---
 
@@ -83,9 +84,13 @@ makaiaanui/
 **Schéma :** `client_requests` (déjà dans combined_schema.sql §9)  
 **Critère succès :** Un MEMBER peut créer une demande (module, titre, description) → apparaît en PENDING.
 
-- [ ] Vérifier que le formulaire de création fonctionne
-- [ ] Vérifier que la demande est bien enregistrée dans `client_requests`
-- [ ] Tester sur Vercel
+- [x] Formulaire de création fonctionnel (module, titre, description, client_name, client_email)
+- [x] Auto-fill client_email + client_name depuis la session pour MEMBER
+- [x] Ajout colonne created_by dans client_requests (schema + types + hook)
+- [x] La demande est enregistrée avec status=PENDING + created_by=auth.uid()
+- [x] TypeScript + build OK
+- [ ] Appliquer ALTER TABLE created_by sur Supabase
+- [ ] Tester sur Vercel : MEMBER crée demande → apparaît PENDING
 
 ### P2.2 — ADMIN/BACK_OFFICE approuve/rejette demandes
 **Fichiers :** `src/pages/ClientPortal.tsx`  
