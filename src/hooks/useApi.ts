@@ -125,7 +125,7 @@ export function useTransportShifts() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchShifts = async (p: number) => {
     try {
@@ -136,7 +136,7 @@ export function useTransportShifts() {
         .from('transport_shifts').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setShifts(data || []);
@@ -195,7 +195,7 @@ export function useTransportTransfers() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchTransfers = async (p: number) => {
     try {
@@ -206,7 +206,7 @@ export function useTransportTransfers() {
         .from('transport_transfers').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setTransfers(data || []);
@@ -265,7 +265,7 @@ export function useAccommodationRooms() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchRooms = async (p: number) => {
     try {
@@ -276,7 +276,7 @@ export function useAccommodationRooms() {
         .from('accommodation_rooms').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setRooms(data || []);
@@ -337,7 +337,7 @@ export function useDeliveries() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchDeliveries = async (p: number) => {
     try {
@@ -348,7 +348,7 @@ export function useDeliveries() {
         .from('deliveries').select('*', { count: 'exact' }).is('deleted_at', null).order('scheduled_time', { ascending: true })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setDeliveries(data || []);
@@ -408,7 +408,7 @@ export function useHospitalityPackages() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchPackages = async (p: number) => {
     try {
@@ -419,7 +419,7 @@ export function useHospitalityPackages() {
         .from('hospitality_packages').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setPackages(data || []);
@@ -484,7 +484,7 @@ export function useHospitalityGuests() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchGuests = async (p: number) => {
     try {
@@ -496,7 +496,7 @@ export function useHospitalityGuests() {
         .select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: true })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setGuests(data || []);
@@ -553,7 +553,7 @@ export function useAccreditations() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchAccreditations = async (p: number) => {
     try {
@@ -564,7 +564,7 @@ export function useAccreditations() {
         .from('accreditations').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setAccreditations(data || []);
@@ -624,7 +624,7 @@ export function useUniforms() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchUniforms = async (p: number) => {
     try {
@@ -635,7 +635,7 @@ export function useUniforms() {
         .from('uniforms').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setUniforms(data || []);
@@ -695,7 +695,7 @@ export function useLaundryRequests() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchRequests = async (p: number) => {
     try {
@@ -706,7 +706,7 @@ export function useLaundryRequests() {
         .from('laundry_requests').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setRequests(data || []);
@@ -766,7 +766,7 @@ export function useAdditionalServices() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchServices = async (p: number) => {
     try {
@@ -777,7 +777,7 @@ export function useAdditionalServices() {
         .from('additional_services').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setServices(data || []);
@@ -837,7 +837,7 @@ export function useCateringMenus() {
   const { organizationId } = useAppStore();
   const groupId = useAppStore(s => s.groupId);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const mapMenuFromDb = (menu: any) => ({
     ...menu,
@@ -858,7 +858,7 @@ export function useCateringMenus() {
         .from('catering_menus').select('*', { count: 'exact' }).is('deleted_at', null).order('start_time', { ascending: true })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
-      if (isMember && groupId) query.eq('group_id', groupId);
+      if (isGroupScoped && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setMenus((data || []).map(mapMenuFromDb));
@@ -1102,7 +1102,7 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
   const { organizationId } = useAppStore();
   const userId = useAppStore(s => s.session?.user?.id);
   const role = useAppStore(s => s.role);
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   const fetchRequests = async (p: number, status?: string, module?: string) => {
     try {
@@ -1115,7 +1115,7 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
       if (organizationId) query = query.eq('organization_id', organizationId);
       if (status && status !== 'ALL') query = query.eq('status', status);
       if (module && module !== 'ALL') query = query.eq('module_type', module);
-      if (isMember && userId) query = query.eq('created_by', userId);
+      if (isGroupScoped && userId) query = query.eq('created_by', userId);
       const { data, count, error } = await query;
       if (error) throw error;
       setRequests(data || []);

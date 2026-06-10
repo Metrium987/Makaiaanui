@@ -29,21 +29,21 @@ export default function Dashboard() {
   const { rooms, loading: roomsLoading } = useAccommodationRooms();
   const { deliveries, loading: deliveriesLoading } = useDeliveries();
 
-  const isMember = role === 'MEMBER';
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
   const groupId = useAppStore(s => s.groupId);
   const [groupName, setGroupName] = useState<string>('');
   
   useEffect(() => {
-    if (isMember && groupId) {
+    if (isGroupScoped && groupId) {
       supabase.from('groups').select('name').eq('id', groupId).single()
         .then(({ data }) => { if (data) setGroupName(data.name); });
     }
-  }, [isMember, groupId]);
+  }, [isGroupScoped, groupId]);
   
   const appName = import.meta.env.VITE_APP_NAME || 'Makaiaanui';
 
-  // ── MEMBER Dashboard ──────────────────────────────────────────
-  if (isMember) {
+  // ── MEMBER / MANAGER Dashboard ─────────────────────────────────
+  if (isGroupScoped) {
     return (
       <div className="flex flex-col gap-8">
         {/* Header */}

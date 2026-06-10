@@ -1,7 +1,7 @@
 // ============================================================================
 // Application Role Types — matches DB roles (profiles.role + RLS policies)
 // ============================================================================
-export type AppRole = 'MEMBER' | 'FRONT_OFFICE' | 'BACK_OFFICE' | 'ADMIN';
+export type AppRole = 'MEMBER' | 'MANAGER' | 'FRONT_OFFICE' | 'BACK_OFFICE' | 'ADMIN';
 
 // ============================================================================
 // Core Entities

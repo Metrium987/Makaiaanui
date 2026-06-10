@@ -16,6 +16,7 @@ const ROLES: { value: AppRole; label: string; icon: React.ReactNode; color: stri
 
 const ROLE_BADGE_STYLES: Record<AppRole, string> = {
   MEMBER: 'bg-slate-50 text-slate-600 border border-slate-200',
+  MANAGER: 'bg-purple-50 text-purple-600 border border-purple-100',
   FRONT_OFFICE: 'bg-blue-50 text-blue-600 border border-blue-100',
   BACK_OFFICE: 'bg-indigo-50 text-indigo-600 border border-indigo-100',
   ADMIN: 'bg-amber-50 text-amber-600 border border-amber-100',

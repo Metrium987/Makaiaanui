@@ -29,7 +29,9 @@
     "deliveries": "Livraisons",
     "uniforms": "Uniformes",
     "crm": "Clients & Prestataires",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "myGroup": "Mon Groupe",
+    "profile": "Profil"
   },
   "dashboard": {
     "title": "Centre de Contrôle",
@@ -526,6 +528,50 @@
     "member": "Membre",
     "backOffice": "Back Office",
     "frontOffice": "Front Office",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "manager": "Manager"
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "subtitle": "Gérez vos informations et votre groupe.",
+    "chooseGroup": "Choisissez votre groupe / délégation",
+    "chooseGroupDesc": "Cette sélection est définitive. Contactez l'administration pour tout changement.",
+    "confirm": "Confirmer",
+    "groupSetSuccess": "Groupe défini avec succès !",
+    "selectGroup": "-- Sélectionnez votre groupe --",
+    "currentGroup": "Mon groupe actuel",
+    "groupInfo": "Groupe / Délégation",
+    "requestChange": "Demander un changement de groupe",
+    "changeInfo": "Votre demande sera examinée par l'administration.",
+    "newGroup": "Nouveau groupe souhaité",
+    "reason": "Raison du changement",
+    "reasonPlaceholder": "Expliquez pourquoi vous souhaitez changer de groupe...",
+    "sendRequest": "Envoyer la demande",
+    "changeRequestSent": "Demande de changement envoyée à l'administration.",
+    "permissions": "Mes permissions",
+    "managerAccess": "Accès gestionnaire de groupe",
+    "managerDesc": "Vous pouvez gérer les données de votre groupe et signaler des membres.",
+    "memberAccess": "Accès membre",
+    "memberDesc": "Vous pouvez consulter les données de votre groupe et soumettre des demandes."
+  },
+  "myGroup": {
+    "title": "Mon Groupe",
+    "subtitle": "Gérez les membres et les demandes de votre groupe.",
+    "members": "Membres",
+    "requests": "Demandes",
+    "group": "Groupe",
+    "noGroup": "Vous n'êtes pas encore associé à un groupe.",
+    "membersList": "Membres du groupe",
+    "noMembers": "Aucun membre dans ce groupe.",
+    "recentRequests": "Demandes récentes",
+    "noRequests": "Aucune demande pour le moment.",
+    "signalMember": "Signaler ce membre",
+    "signalTitle": "Signaler un membre",
+    "signalInfo": "Vous signalez",
+    "signalDesc": "Ce signalement sera envoyé à l'administration pour examen.",
+    "reason": "Motif du signalement",
+    "reasonPlaceholder": "Expliquez pourquoi ce membre ne devrait pas faire partie du groupe...",
+    "sendSignal": "Envoyer le signalement",
+    "signalSent": "Signalement envoyé à l'administration."
   }
 }

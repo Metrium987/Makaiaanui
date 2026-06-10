@@ -29,7 +29,9 @@
     "deliveries": "Deliveries",
     "uniforms": "Uniforms",
     "crm": "Clients & Providers",
-    "settings": "Settings"
+    "settings": "Settings",
+    "myGroup": "My Group",
+    "profile": "Profile"
   },
   "dashboard": {
     "title": "Data Control Center",
@@ -526,6 +528,50 @@
     "member": "Member",
     "backOffice": "Back Office",
     "frontOffice": "Front Office",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "manager": "Manager"
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your information and group.",
+    "chooseGroup": "Choose your group / delegation",
+    "chooseGroupDesc": "This selection is final. Contact administration for any change.",
+    "confirm": "Confirm",
+    "groupSetSuccess": "Group set successfully!",
+    "selectGroup": "-- Select your group --",
+    "currentGroup": "My current group",
+    "groupInfo": "Group / Delegation",
+    "requestChange": "Request a group change",
+    "changeInfo": "Your request will be reviewed by administration.",
+    "newGroup": "Requested new group",
+    "reason": "Reason for change",
+    "reasonPlaceholder": "Explain why you want to change your group...",
+    "sendRequest": "Send request",
+    "changeRequestSent": "Change request sent to administration.",
+    "permissions": "My permissions",
+    "managerAccess": "Group manager access",
+    "managerDesc": "You can manage your group's data and report members.",
+    "memberAccess": "Member access",
+    "memberDesc": "You can view your group's data and submit requests."
+  },
+  "myGroup": {
+    "title": "My Group",
+    "subtitle": "Manage your group members and requests.",
+    "members": "Members",
+    "requests": "Requests",
+    "group": "Group",
+    "noGroup": "You are not yet associated with a group.",
+    "membersList": "Group Members",
+    "noMembers": "No members in this group.",
+    "recentRequests": "Recent Requests",
+    "noRequests": "No requests yet.",
+    "signalMember": "Report this member",
+    "signalTitle": "Report a member",
+    "signalInfo": "You are reporting",
+    "signalDesc": "This report will be sent to administration for review.",
+    "reason": "Reason for report",
+    "reasonPlaceholder": "Explain why this member should not be part of the group...",
+    "sendSignal": "Send report",
+    "signalSent": "Report sent to administration."
   }
 }

@@ -306,85 +306,85 @@ CREATE POLICY "Back-office can insert activity logs" ON public.activity_logs FOR
 CREATE POLICY "Users can view their organization providers" ON public.providers FOR SELECT 
     USING (organization_id IN (SELECT organization_id FROM public.profiles WHERE id = auth.uid()));
 CREATE POLICY "Back-office and Admin manage providers" ON public.providers FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Clients
 CREATE POLICY "Users can view their organization clients" ON public.clients FOR SELECT 
     USING (organization_id IN (SELECT organization_id FROM public.profiles WHERE id = auth.uid()));
 CREATE POLICY "Back-office and Admin manage clients" ON public.clients FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Transport Shifts
 CREATE POLICY "Select organization transport shifts" ON public.transport_shifts FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Front-office and Back-office manage transport shifts" ON public.transport_shifts FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
 -- Transport Transfers
 CREATE POLICY "Select organization transport transfers" ON public.transport_transfers FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Back-office manage transport transfers" ON public.transport_transfers FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Accommodation Rooms
 CREATE POLICY "Select organization accommodation rooms" ON public.accommodation_rooms FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Front-office and Back-office manage accommodation rooms" ON public.accommodation_rooms FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
 -- Catering Menus
 CREATE POLICY "Select organization catering menus" ON public.catering_menus FOR SELECT 
     USING (organization_id = get_user_org() AND get_user_role() IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Back-office and Admin manage catering menus" ON public.catering_menus FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Hospitality Packages
 CREATE POLICY "Select organization hospitality packages" ON public.hospitality_packages FOR SELECT 
     USING (organization_id = get_user_org() AND get_user_role() IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Back-office and Admin manage hospitality packages" ON public.hospitality_packages FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Hospitality Guests
 CREATE POLICY "Select organization hospitality guests" ON public.hospitality_guests FOR SELECT 
     USING (organization_id = get_user_org() AND get_user_role() IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Back-office and Admin manage hospitality guests" ON public.hospitality_guests FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Accreditations
 CREATE POLICY "Select organization accreditations" ON public.accreditations FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Front-office and Back-office manage accreditations" ON public.accreditations FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
 -- Uniforms
 CREATE POLICY "Select organization uniforms" ON public.uniforms FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Back-office and Admin manage uniforms" ON public.uniforms FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Laundry Requests
 CREATE POLICY "Select organization laundry requests" ON public.laundry_requests FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Front-office and Back-office manage laundry requests" ON public.laundry_requests FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
 -- Additional Services
 CREATE POLICY "Select organization additional services" ON public.additional_services FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Back-office and Admin manage additional services" ON public.additional_services FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- Deliveries
 CREATE POLICY "Select organization deliveries" ON public.deliveries FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Front-office and Back-office manage deliveries" ON public.deliveries FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
 -- Groups
 CREATE POLICY "Users can view org groups" ON public.groups FOR SELECT 
     USING (organization_id = get_user_org());
 CREATE POLICY "Back-office and Admin manage groups" ON public.groups FOR ALL 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 -- ============================================================================
 -- 6. AUTO-PROFILE TRIGGER (creates profile on signup)
@@ -429,7 +429,7 @@ ALTER TABLE public.additional_services ADD COLUMN IF NOT EXISTS group_id UUID RE
 ALTER TABLE public.deliveries ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
 
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS chk_profiles_role;
-ALTER TABLE public.profiles ADD CONSTRAINT chk_profiles_role CHECK (role IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+ALTER TABLE public.profiles ADD CONSTRAINT chk_profiles_role CHECK (role IN ('MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
 ALTER TABLE public.transport_shifts DROP CONSTRAINT IF EXISTS chk_transport_shifts_status;
 ALTER TABLE public.transport_shifts ADD CONSTRAINT chk_transport_shifts_status CHECK (status IN ('ACTIVE', 'OFFLINE'));
@@ -643,7 +643,7 @@ CREATE POLICY "Users can create requests" ON public.client_requests
   FOR INSERT WITH CHECK (organization_id = get_user_org());
 
 CREATE POLICY "Back-office and Admin manage requests" ON public.client_requests
-  FOR UPDATE USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+  FOR UPDATE USING (organization_id = get_user_org() AND get_user_role() IN ('MANAGER', 'BACK_OFFICE', 'ADMIN'));
 
 CREATE POLICY "Admins can delete requests" ON public.client_requests
   FOR DELETE USING (organization_id = get_user_org() AND get_user_role() = 'ADMIN');

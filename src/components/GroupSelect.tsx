@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useTranslation } from 'react-i18next';
+import { useAppStore } from '../store/appStore';
 
 interface GroupSelectProps {
   value: string;
@@ -12,8 +13,11 @@ interface GroupSelectProps {
 
 export default function GroupSelect({ value, onChange, disabled, label, required }: GroupSelectProps) {
   const { t } = useTranslation();
+  const role = useAppStore(s => s.role);
+  const storeGroupId = useAppStore(s => s.groupId);
   const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  const isGroupScoped = role === 'MEMBER' || role === 'MANAGER';
 
   useEffect(() => {
     setLoading(true);
@@ -23,6 +27,13 @@ export default function GroupSelect({ value, onChange, disabled, label, required
         setLoading(false);
       });
   }, []);
+
+  // Auto-select the user's group for MANAGER/MEMBER if no value set
+  useEffect(() => {
+    if (isGroupScoped && storeGroupId && !value) {
+      onChange(storeGroupId);
+    }
+  }, [isGroupScoped, storeGroupId, value, onChange]);
 
   return (
     <div>

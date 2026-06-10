@@ -21,23 +21,27 @@ import {
   WashingMachine,
   PlusCircle,
   ClipboardList,
-  Send
+  Send,
+  UserCircle,
+  Building2
 } from 'lucide-react';
 
 const ALL_NAVIGATION = [
-  { name: 'common.dashboard', href: '/app', icon: LayoutDashboard, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.transport', href: '/app/transport', icon: Car, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.accommodation', href: '/app/accommodation', icon: BedDouble, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.catering', href: '/app/catering', icon: Coffee, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.hospitalities', href: '/app/hospitalities', icon: Ticket, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.accreditations', href: '/app/accreditations', icon: BadgeCheck, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.deliveries', href: '/app/deliveries', icon: Package, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'Laverie', href: '/app/laverie', icon: WashingMachine, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'common.uniforms', href: '/app/uniforms', icon: Shirt, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
-  { name: 'Services Add.', href: '/app/services-additionnels', icon: PlusCircle, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.dashboard', href: '/app', icon: LayoutDashboard, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.myGroup', href: '/app/mon-groupe', icon: Building2, roles: ['MANAGER'] as AppRole[] },
+  { name: 'common.profile', href: '/app/profil', icon: UserCircle, roles: ['MEMBER', 'MANAGER'] as AppRole[] },
+  { name: 'common.transport', href: '/app/transport', icon: Car, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.accommodation', href: '/app/accommodation', icon: BedDouble, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.catering', href: '/app/catering', icon: Coffee, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.hospitalities', href: '/app/hospitalities', icon: Ticket, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.accreditations', href: '/app/accreditations', icon: BadgeCheck, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.deliveries', href: '/app/deliveries', icon: Package, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'Laverie', href: '/app/laverie', icon: WashingMachine, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.uniforms', href: '/app/uniforms', icon: Shirt, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'Services Add.', href: '/app/services-additionnels', icon: PlusCircle, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
   { name: 'common.crm', href: '/app/crm', icon: Users, roles: ['BACK_OFFICE', 'ADMIN'] as AppRole[] },
   { name: 'Audit Log', href: '/app/audit-log', icon: ClipboardList, roles: ['ADMIN'] as AppRole[] },
-  { name: 'portal.sidebar', href: '/app/portal', icon: Send, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'portal.sidebar', href: '/app/portal', icon: Send, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
   { name: 'common.settings', href: '/app/settings', icon: Settings, roles: ['ADMIN'] as AppRole[] },
   { name: 'User Management', href: '/app/users', icon: Users, roles: ['ADMIN'] as AppRole[] },
 ];
@@ -50,7 +54,7 @@ export function Sidebar() {
   const [groupName, setGroupName] = useState<string>('');
   
   useEffect(() => {
-    if (role === 'MEMBER' && groupId) {
+    if ((role === 'MEMBER' || role === 'MANAGER') && groupId) {
       supabase.from('groups').select('name').eq('id', groupId).single()
         .then(({ data }) => { if (data) setGroupName(data.name); });
     }
@@ -62,6 +66,7 @@ export function Sidebar() {
   const ROLE_LABELS: Record<AppRole, string> = {
     ADMIN: t('roles.admin', 'Admin'),
     MEMBER: t('roles.member', 'Member'),
+    MANAGER: t('roles.manager', 'Manager'),
     BACK_OFFICE: t('roles.backOffice', 'Back Office'),
     FRONT_OFFICE: t('roles.frontOffice', 'Front Office'),
   };
