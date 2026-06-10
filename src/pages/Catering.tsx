@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Coffee, Utensils, AlertTriangle, ChevronRight, Plus, Trash2, Edit2, RotateCw, X, Check, Download, FileSpreadsheet, FileText } from 'lucide-react';
 import { useCateringMenus } from '../hooks/useApi';
+import { useAppStore } from '../store/appStore';
 import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonList } from '../components/Skeleton';
@@ -13,6 +14,8 @@ const DEFAULT_DIETARY_COUNTS: Record<string, string> = { pax: '', veg: '', vgn: 
 
 export default function Catering() {
   const { t } = useTranslation();
+  const { role } = useAppStore();
+  const isReadOnly = role === 'MEMBER';
   const { menus, loading, addMenu, updateMenu, deleteMenu, refresh, page, totalCount, goToPage } = useCateringMenus();
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -98,7 +101,7 @@ export default function Catering() {
         <div className="flex items-center gap-2">
           <button type="button" onClick={handleRefresh} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Refresh menu services"><RotateCw className={`w-4 h-4 ${actionLoading ? 'animate-spin' : ''}`} /></button>
           <button type="button" onClick={handleExportCsv} disabled={loading || menus.length === 0} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to CSV"><Download className="w-4 h-4" /></button><button type="button" onClick={handleExportExcel} disabled={loading || menus.length === 0} className="p-2 border border-slate-200 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to Excel"><FileSpreadsheet className="w-4 h-4" /></button><button type="button" onClick={handleExportPdf} disabled={loading || menus.length === 0} className="p-2 border border-slate-200 hover:bg-red-50 text-red-500 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to PDF"><FileText className="w-4 h-4" /></button>
-          <button onClick={() => { resetForm(); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" />{t('catering.addMenu', 'Add Menu')}</button>
+          {!isReadOnly && <button onClick={() => { resetForm(); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" />{t('catering.addMenu', 'Add Menu')}</button>}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 shrink-0">
@@ -108,7 +111,7 @@ export default function Catering() {
       <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col flex-1 min-h-[400px]">
         <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || menus.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />
+            {!isReadOnly && <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || menus.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}
             <h2 className="font-bold text-sm uppercase tracking-wider text-slate-700">{t('catering.todaysSchedule', "Today's Service Schedule")}</h2>
           </div>
           <span className="text-xs font-mono text-slate-500">{menus.length} {t('catering.servicesPlanned', 'services planned')}</span>
@@ -120,7 +123,7 @@ export default function Catering() {
           {!loading && menus.map((menu, idx) => (
             <div key={menu.id || idx} className="p-4 hover:bg-slate-50/50 transition-colors flex items-center justify-between group gap-4">
               <div className="flex items-center gap-4 flex-1 min-w-0">
-                <input type="checkbox" checked={selectedIds.has(menu.id)} onChange={() => toggleSelect(menu.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0" />
+                {!isReadOnly && <input type="checkbox" checked={selectedIds.has(menu.id)} onChange={() => toggleSelect(menu.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0" />}
                 <div className="w-12 h-12 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0"><Coffee className="w-5 h-5" /></div>
                 <div className="min-w-0 flex-1">
                   <h4 className="font-bold text-slate-900 truncate">{menu.title}</h4>
@@ -135,8 +138,8 @@ export default function Catering() {
               </div>
               <div className="text-right shrink-0 px-2"><p className="text-lg font-bold text-slate-900 font-mono">{menu.pax}</p><p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest font-mono">Covers</p></div>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => handleEditClick(menu)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit scheduled meal plan"><Edit2 className="w-4 h-4" /></button>
-                <button type="button" onClick={(e) => { e.stopPropagation(); setDeletingMenu(menu); setActionError(null); }} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Remove scheduled meal plan"><Trash2 className="w-4 h-4" /></button>
+                {!isReadOnly && <button type="button" onClick={() => handleEditClick(menu)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit scheduled meal plan"><Edit2 className="w-4 h-4" /></button>}
+                {!isReadOnly && <button type="button" onClick={(e) => { e.stopPropagation(); setDeletingMenu(menu); setActionError(null); }} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Remove scheduled meal plan"><Trash2 className="w-4 h-4" /></button>}
               </div>
             </div>
           ))}

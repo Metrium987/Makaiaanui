@@ -1,16 +1,104 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useActivityLogs, useTransportShifts, useAccommodationRooms, useDeliveries } from '../hooks/useApi';
+import { useAppStore } from '../store/appStore';
 import { formatDistanceToNow } from 'date-fns';
 import { SkeletonCard, SkeletonList } from '../components/Skeleton';
+import { Car, BedDouble, Coffee, Ticket, BadgeCheck, Package, Shirt, WashingMachine, PlusCircle, Send, ArrowRight } from 'lucide-react';
+
+const MEMBER_MODULES = [
+  { name: 'common.transport', href: '/app/transport', icon: Car, descKey: 'dashboard.member.transportDesc' },
+  { name: 'common.accommodation', href: '/app/accommodation', icon: BedDouble, descKey: 'dashboard.member.accommodationDesc' },
+  { name: 'common.catering', href: '/app/catering', icon: Coffee, descKey: 'dashboard.member.cateringDesc' },
+  { name: 'common.hospitalities', href: '/app/hospitalities', icon: Ticket, descKey: 'dashboard.member.hospitalitiesDesc' },
+  { name: 'common.accreditations', href: '/app/accreditations', icon: BadgeCheck, descKey: 'dashboard.member.accreditationsDesc' },
+  { name: 'common.deliveries', href: '/app/deliveries', icon: Package, descKey: 'dashboard.member.deliveriesDesc' },
+  { name: 'Laverie', href: '/app/laverie', icon: WashingMachine, descKey: 'dashboard.member.laundryDesc' },
+  { name: 'common.uniforms', href: '/app/uniforms', icon: Shirt, descKey: 'dashboard.member.uniformsDesc' },
+  { name: 'Services Add.', href: '/app/services-additionnels', icon: PlusCircle, descKey: 'dashboard.member.servicesDesc' },
+];
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const role = useAppStore(s => s.role);
   const { logs, loading: logsLoading } = useActivityLogs();
   const { shifts, loading: shiftsLoading } = useTransportShifts();
   const { rooms, loading: roomsLoading } = useAccommodationRooms();
   const { deliveries, loading: deliveriesLoading } = useDeliveries();
 
+  const isMember = role === 'MEMBER';
   const appName = import.meta.env.VITE_APP_NAME || 'Makaiaanui';
+
+  // ── MEMBER Dashboard ──────────────────────────────────────────
+  if (isMember) {
+    return (
+      <div className="flex flex-col gap-8">
+        {/* Header */}
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 uppercase">
+            {t('dashboard.member.title', 'Catalogue & Commandes')}
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            {t('dashboard.member.subtitle', 'Parcourez les services disponibles et soumettez vos demandes.')}
+          </p>
+        </div>
+
+        {/* Quick action — Portal */}
+        <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-2xl p-6 sm:p-8 shadow-lg shadow-indigo-200/50 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold">{t('dashboard.member.portalCta', 'Une demande spécifique ?')}</h3>
+              <p className="text-sm text-indigo-100 mt-1 max-w-md">
+                {t('dashboard.member.portalDesc', 'Soumettez une demande personnalisée via le portail client. Suivi en temps réel.')}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('/app/portal')}
+              className="inline-flex items-center gap-2 bg-white text-indigo-700 px-5 py-3 rounded-xl text-sm font-bold hover:bg-indigo-50 transition-colors shadow-sm shrink-0"
+            >
+              <Send className="w-4 h-4" />
+              {t('dashboard.member.goPortal', 'Accéder au portail')}
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Module cards grid */}
+        <div>
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+            {t('dashboard.member.modulesTitle', 'Services disponibles')}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {MEMBER_MODULES.map((mod) => (
+              <button
+                key={mod.href}
+                type="button"
+                onClick={() => navigate(mod.href)}
+                className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all text-left flex items-start gap-4"
+              >
+                <div className="w-10 h-10 bg-slate-50 group-hover:bg-indigo-50 rounded-lg flex items-center justify-center shrink-0 transition-colors">
+                  <mod.icon className="w-5 h-5 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-sm font-semibold text-slate-900 block truncate">{t(mod.name)}</span>
+                  {t(mod.descKey, '') && (
+                    <span className="text-xs text-slate-400 mt-0.5 block line-clamp-2">
+                      {t(mod.descKey, '')}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── ADMIN / BACK_OFFICE Dashboard (original) ─────────────────
+
   const activeShifts = shifts.filter(s => s.status === 'ACTIVE').length;
   const uniqueDrivers = new Set(shifts.map(s => s.driver_name)).size;
   const pendingDeliveries = deliveries.filter(d => d.status === 'PENDING' || d.status === 'EN_ROUTE');

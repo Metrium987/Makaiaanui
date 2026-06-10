@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Package, Truck, Clock, CheckCircle2, MapPin, Plus, Trash2, Edit2, RotateCw, X, QrCode, Download } from 'lucide-react';
 import { useDeliveries } from '../hooks/useApi';
+import { useAppStore } from '../store/appStore';
 import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
@@ -20,6 +21,8 @@ const DELIVERY_STATUSES = [
 
 export default function Deliveries() {
   const { t } = useTranslation();
+  const { role } = useAppStore();
+  const isReadOnly = role === 'MEMBER';
   const { deliveries, loading, addDelivery, updateDelivery, deleteDelivery, refresh, page, totalCount, goToPage } = useDeliveries();
   const [siteFilter, setSiteFilter] = useState(ALL_SITES_LABEL);
   const [searchTerm, setSearchTerm] = useState('');
@@ -128,7 +131,7 @@ export default function Deliveries() {
         <div className="flex items-center gap-2">
           <button type="button" onClick={handleRefresh} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Refresh Deliveries queue"><RotateCw className={`w-4 h-4 ${actionLoading ? 'animate-spin' : ''}`} /></button>
           <button type="button" onClick={handleExportCsv} disabled={loading || deliveries.length === 0} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to CSV"><Download className="w-4 h-4" /></button>
-          <button onClick={() => { resetForm(); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0 font-sans"><Plus className="w-4 h-4" />{t('deliveries.logIncoming', 'Log Incoming')}</button>
+          {!isReadOnly && <button onClick={() => { resetForm(); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0 font-sans"><Plus className="w-4 h-4" />{t('deliveries.logIncoming', 'Log Incoming')}</button>}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 shrink-0 font-sans">
@@ -151,7 +154,7 @@ export default function Deliveries() {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-white border-b border-slate-100 text-[10px] uppercase tracking-widest text-slate-400 sticky top-0 z-10 font-mono">
               <tr>
-                <th className="px-4 py-4 w-10"><input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || filteredDeliveries.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" /></th>
+                <th className="px-4 py-4 w-10">{!isReadOnly && <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || filteredDeliveries.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}</th>
                 <th className="px-6 py-4 font-bold">{t('deliveries.tableHeaders.manifestId', 'Manifest ID')}</th><th className="px-6 py-4 font-bold">{t('deliveries.tableHeaders.contents', 'Contents')}</th><th className="px-6 py-4 font-bold">{t('deliveries.tableHeaders.destination', 'Destination / Site')}</th><th className="px-6 py-4 font-bold text-right font-mono">{t('deliveries.tableHeaders.scheduledTime', 'Scheduled Time')}</th><th className="px-6 py-4 font-bold text-center">{t('deliveries.tableHeaders.status', 'Status')}</th><th className="px-6 py-4 font-bold text-center">{t('deliveries.tableHeaders.actions', 'Actions / QR')}</th>
               </tr>
             </thead>
@@ -160,13 +163,13 @@ export default function Deliveries() {
               {!loading && filteredDeliveries.length === 0 && (<tr><td colSpan={7} className="px-6 py-12 text-center text-slate-400 text-sm">{t('deliveries.noDeliveries', 'No matching deliveries found.')}</td></tr>)}
               {!loading && filteredDeliveries.map((row, i) => (
                 <tr key={row.id || i} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-4 py-4"><input type="checkbox" checked={selectedIds.has(row.id)} onChange={() => toggleSelect(row.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" /></td>
+                  <td className="px-4 py-4">{!isReadOnly && <input type="checkbox" checked={selectedIds.has(row.id)} onChange={() => toggleSelect(row.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}</td>
                   <td className="px-6 py-4"><span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded">{(row.id || '').substring(0, 8)}</span></td>
                   <td className="px-6 py-4 font-bold text-slate-900"><div className="flex items-center gap-3"><Package className="w-4 h-4 text-slate-400 shrink-0" />{row.detail}</div></td>
                   <td className="px-6 py-4"><div className="font-semibold text-slate-700">{row.site}</div></td>
                   <td className="px-6 py-4 text-right font-mono text-slate-600 text-xs"><div className="flex items-center justify-end gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-400" />{row.scheduled_time ? new Date(row.scheduled_time).toLocaleString() : 'ASAP'}</div></td>
                   <td className="px-6 py-4 text-center"><span className={`px-2.5 py-1 text-[9px] font-bold rounded-lg uppercase tracking-wider border ${row.status === 'RECEIVED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : row.status === 'EN_ROUTE' ? 'bg-blue-50 text-blue-600 border-blue-100 animate-pulse' : row.status === 'DELAYED' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>{row.status ? row.status.replace('_', ' ') : 'PENDING'}</span></td>
-                  <td className="px-6 py-4 text-center"><div className="flex items-center justify-center gap-3">{row.status !== 'RECEIVED' && (<button type="button" onClick={() => setActiveQrDelivery(row)} className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-[10px] uppercase font-bold px-2 py-0.5 rounded flex items-center gap-1 font-mono hover:text-indigo-600 transition-colors" title="QR handshake"><QrCode className="w-3 h-3" /> {t('deliveries.qrSignoff', 'QR Signoff')}</button>)}{row.status === 'PENDING' && (<button type="button" onClick={() => handleQuickStatusTransition(row, 'EN_ROUTE')} className="text-[10px] font-bold uppercase text-indigo-600 hover:underline">{t('deliveries.ship', 'Ship')}</button>)}{row.status === 'EN_ROUTE' && (<button type="button" onClick={() => handleQuickStatusTransition(row, 'DELAYED')} className="text-[10px] font-bold uppercase text-red-500 hover:underline">{t('deliveries.markDelay', 'Mark Delay')}</button>)}<button type="button" onClick={() => handleEditClick(row)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit Delivery details"><Edit2 className="w-3.5 h-3.5" /></button><button type="button" onClick={(e) => handleDelete(row.id, e)} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Cancel Delivery Ticket"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                  <td className="px-6 py-4 text-center"><div className="flex items-center justify-center gap-3">{row.status !== 'RECEIVED' && !isReadOnly && (<button type="button" onClick={() => setActiveQrDelivery(row)} className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-[10px] uppercase font-bold px-2 py-0.5 rounded flex items-center gap-1 font-mono hover:text-indigo-600 transition-colors" title="QR handshake"><QrCode className="w-3 h-3" /> {t('deliveries.qrSignoff', 'QR Signoff')}</button>)}{row.status === 'PENDING' && !isReadOnly && (<button type="button" onClick={() => handleQuickStatusTransition(row, 'EN_ROUTE')} className="text-[10px] font-bold uppercase text-indigo-600 hover:underline">{t('deliveries.ship', 'Ship')}</button>)}{row.status === 'EN_ROUTE' && !isReadOnly && (<button type="button" onClick={() => handleQuickStatusTransition(row, 'DELAYED')} className="text-[10px] font-bold uppercase text-red-500 hover:underline">{t('deliveries.markDelay', 'Mark Delay')}</button>)}{!isReadOnly && <button type="button" onClick={() => handleEditClick(row)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit Delivery details"><Edit2 className="w-3.5 h-3.5" /></button>}{!isReadOnly && <button type="button" onClick={(e) => handleDelete(row.id, e)} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Cancel Delivery Ticket"><Trash2 className="w-3.5 h-3.5" /></button>}</div></td>
                 </tr>
               ))}
             </tbody>

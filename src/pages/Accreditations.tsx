@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BadgeCheck, ShieldAlert, Fingerprint, Printer, Plus, Trash2, Edit2, RotateCw, X, Search, Download } from 'lucide-react';
 import { useAccreditations } from '../hooks/useApi';
+import { useAppStore } from '../store/appStore';
 import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
@@ -12,6 +13,8 @@ const ACCREDITATION_ZONES = ['1', '2', '3', '4', '5', 'V', 'S', 'M', 'P'] as con
 
 export default function Accreditations() {
   const { t } = useTranslation();
+  const { role } = useAppStore();
+  const isReadOnly = role === 'MEMBER';
   const { accreditations, loading, addAccreditation, updateAccreditation, deleteAccreditation, refresh, page, totalCount, goToPage } = useAccreditations();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -112,7 +115,7 @@ export default function Accreditations() {
         <div className="flex items-center gap-2 shrink-0">
           <button type="button" onClick={handleRefresh} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Refresh Accreditation List"><RotateCw className={`w-4 h-4 ${actionLoading ? 'animate-spin' : ''}`} /></button>
           <button type="button" onClick={handleExportCsv} disabled={loading || accreditations.length === 0} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to CSV"><Download className="w-4 h-4" /></button>
-          <button onClick={() => { resetForm(); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Fingerprint className="w-4 h-4" />{t('accreditations.newGroup', 'New Group')}</button>
+          {!isReadOnly && <button onClick={() => { resetForm(); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Fingerprint className="w-4 h-4" />{t('accreditations.newGroup', 'New Group')}</button>}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 shrink-0 font-sans">
@@ -130,7 +133,7 @@ export default function Accreditations() {
           <table className="w-full text-left text-sm whitespace-nowrap font-sans">
             <thead className="bg-white border-b border-slate-100 text-[10px] uppercase tracking-widest text-slate-400 font-mono">
               <tr>
-                <th className="px-4 py-4 w-10"><input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || filteredAccreditations.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" /></th>
+                <th className="px-4 py-4 w-10">{!isReadOnly && <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || filteredAccreditations.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}</th>
                 <th className="px-6 py-4 font-bold">{t('accreditations.tableHeaders.code', 'Code')}</th><th className="px-6 py-4 font-bold">{t('accreditations.tableHeaders.populationGroup', 'Population Group')}</th><th className="px-6 py-4 font-bold">{t('accreditations.tableHeaders.accessZones', 'Access Zones')}</th><th className="px-6 py-4 font-bold text-right">{t('accreditations.tableHeaders.printed', 'Printed')}</th><th className="px-6 py-4 font-bold text-right">{t('accreditations.tableHeaders.pending', 'Pending')}</th><th className="px-6 py-4 font-bold text-center">{t('accreditations.tableHeaders.batchProcessing', 'Batch Processing')}</th>
               </tr>
             </thead>
@@ -139,13 +142,13 @@ export default function Accreditations() {
               {!loading && filteredAccreditations.length === 0 && (<tr><td colSpan={7} className="px-6 py-12 text-center text-slate-400 text-sm">{t('accreditations.noAccreditations', 'No population demographics match active filters.')}</td></tr>)}
               {!loading && filteredAccreditations.map((pop, i) => (
                 <tr key={pop.id || i} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-4 py-4"><input type="checkbox" checked={selectedIds.has(pop.id)} onChange={() => toggleSelect(pop.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" /></td>
+                  <td className="px-4 py-4">{!isReadOnly && <input type="checkbox" checked={selectedIds.has(pop.id)} onChange={() => toggleSelect(pop.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}</td>
                   <td className="px-6 py-4"><span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded">{pop.code}</span></td>
                   <td className="px-6 py-4 font-bold text-slate-900">{pop.name}</td>
                   <td className="px-6 py-4"><div className="flex gap-1 flex-wrap">{(pop.zones || []).map((z: string) => (<span key={z} className="w-6 h-6 flex items-center justify-center bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold rounded font-mono">{z}</span>))}</div></td>
                   <td className="px-6 py-4 text-right font-mono font-semibold text-slate-800">{(pop.count || 0).toLocaleString()}</td>
                   <td className="px-6 py-4 text-right">{(pop.pending || 0) > 0 ? (<span className="font-mono text-amber-600 font-bold bg-amber-50 border border-amber-100 px-2 py-0.5 rounded text-xs">{pop.pending}</span>) : (<span className="text-slate-300">-</span>)}</td>
-                  <td className="px-6 py-4 text-center"><div className="flex items-center justify-center gap-3"><button type="button" onClick={(e) => handleSimulatePrint(pop, e)} disabled={activePrintingId !== null || Number(pop.pending) <= 0} className="bg-slate-900 border border-slate-250 text-slate-100 font-bold px-3 py-1 text-[10px] hover:bg-indigo-600 hover:text-white rounded flex items-center gap-1 uppercase tracking-widest disabled:opacity-40 transition-all font-mono"><Printer className={`w-3.5 h-3.5 ${activePrintingId === pop.id ? 'animate-bounce' : ''}`} />{activePrintingId === pop.id ? t('accreditations.emitting', 'Emitting...') : t('accreditations.printBadge', 'Print Badge')}</button><button type="button" onClick={() => handleEditClick(pop)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit credentials rule"><Edit2 className="w-4 h-4" /></button><button type="button" onClick={(e) => handleDelete(pop.id, e)} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Delete entry"><Trash2 className="w-4 h-4" /></button></div></td>
+                  <td className="px-6 py-4 text-center"><div className="flex items-center justify-center gap-3">{!isReadOnly && <button type="button" onClick={(e) => handleSimulatePrint(pop, e)} disabled={activePrintingId !== null || Number(pop.pending) <= 0} className="bg-slate-900 border border-slate-250 text-slate-100 font-bold px-3 py-1 text-[10px] hover:bg-indigo-600 hover:text-white rounded flex items-center gap-1 uppercase tracking-widest disabled:opacity-40 transition-all font-mono"><Printer className={`w-3.5 h-3.5 ${activePrintingId === pop.id ? 'animate-bounce' : ''}`} />{activePrintingId === pop.id ? t('accreditations.emitting', 'Emitting...') : t('accreditations.printBadge', 'Print Badge')}</button>}{!isReadOnly && <button type="button" onClick={() => handleEditClick(pop)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit credentials rule"><Edit2 className="w-4 h-4" /></button>}{!isReadOnly && <button type="button" onClick={(e) => handleDelete(pop.id, e)} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Delete entry"><Trash2 className="w-4 h-4" /></button>}</div></td>
                 </tr>
               ))}
             </tbody>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Building, BedDouble, Plus, Trash2, X, Edit2, RotateCw, DollarSign, Download, FileSpreadsheet, FileText } from 'lucide-react';
 import { useAccommodationRooms } from '../hooks/useApi';
+import { useAppStore } from '../store/appStore';
 import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
@@ -25,6 +26,8 @@ const REVENUE_MARGIN_RATE = 0.15;
 
 export default function Accommodation() {
   const { t } = useTranslation();
+  const { role } = useAppStore();
+  const isReadOnly = role === 'MEMBER';
   const { rooms, loading, addRoom, updateRoom, deleteRoom, refresh, page, totalCount, goToPage } = useAccommodationRooms();
 
   const [search, setSearch] = useState('');
@@ -115,7 +118,7 @@ export default function Accommodation() {
         <div className="flex items-center gap-2">
           <button type="button" onClick={handleRefreshData} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Refresh rooming lists"><RotateCw className={`w-4 h-4 ${actionLoading ? 'animate-spin' : ''}`} /></button>
           <button type="button" onClick={handleExportCsv} disabled={loading || rooms.length === 0} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to CSV"><Download className="w-4 h-4" /></button><button type="button" onClick={handleExportExcel} disabled={loading || rooms.length === 0} className="p-2 border border-slate-200 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to Excel"><FileSpreadsheet className="w-4 h-4" /></button><button type="button" onClick={handleExportPdf} disabled={loading || rooms.length === 0} className="p-2 border border-slate-200 hover:bg-red-50 text-red-500 rounded-lg transition-colors flex items-center justify-center shrink-0" title="Export to PDF"><FileText className="w-4 h-4" /></button>
-          <button type="button" onClick={() => { setGuestName(''); setGroupName(''); setHotelName(''); setRoomType('Double'); setCheckInDate(''); setStatus('PENDING'); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shrink-0 flex items-center gap-2"><Plus className="w-4 h-4" />Add Entry</button>
+          {!isReadOnly && <button type="button" onClick={() => { setGuestName(''); setGroupName(''); setHotelName(''); setRoomType('Double'); setCheckInDate(''); setStatus('PENDING'); setActionError(null); setShowAddModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shrink-0 flex items-center gap-2"><Plus className="w-4 h-4" />Add Entry</button>}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0">
@@ -143,7 +146,7 @@ export default function Accommodation() {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-white border-b border-slate-100 text-[10px] uppercase tracking-widest text-slate-400 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-4 w-10"><input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || displayedRooms.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" /></th>
+                <th className="px-4 py-4 w-10">{!isReadOnly && <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} disabled={loading || displayedRooms.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}</th>
                 <th className="px-6 py-4 font-bold">Guest Name</th><th className="px-6 py-4 font-bold">Group / Delegation</th><th className="px-6 py-4 font-bold">Hotel Location</th><th className="px-6 py-4 font-bold">Room Type</th><th className="px-6 py-4 font-bold">Check-In</th><th className="px-6 py-4 font-bold">Status</th><th className="px-6 py-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
@@ -152,14 +155,14 @@ export default function Accommodation() {
               {!loading && displayedRooms.length === 0 && (<tr><td colSpan={8} className="px-6 py-12 text-center text-slate-400 text-sm">No matching records found. Use "Add Entry" to create new allocations.</td></tr>)}
               {!loading && displayedRooms.map((row, i) => (
                 <tr key={row.id || i} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-4"><input type="checkbox" checked={selectedIds.has(row.id)} onChange={() => toggleSelect(row.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" /></td>
+                  <td className="px-4 py-4">{!isReadOnly && <input type="checkbox" checked={selectedIds.has(row.id)} onChange={() => toggleSelect(row.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}</td>
                   <td className="px-6 py-4 font-medium text-slate-900">{row.guest_name}</td>
                   <td className="px-6 py-4 font-sans">{row.group_name}</td>
                   <td className="px-6 py-4 font-bold text-slate-700">{row.hotel_name}</td>
                   <td className="px-6 py-4 text-slate-500"><span className="bg-slate-100 text-slate-700 px-2.5 py-1 rounded text-xs font-mono">{row.room_type} (€{getRoomPrice(row.room_type)})</span></td>
                   <td className="px-6 py-4 font-mono text-xs">{row.check_in_date ? new Date(row.check_in_date).toISOString().split('T')[0] : ''}</td>
                   <td className="px-6 py-4"><span className={`px-2.5 py-1 text-[10px] font-bold rounded-full ${row.status === 'CONFIRMED' ? 'bg-indigo-50 text-indigo-600' : row.status === 'CHECKED_IN' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>{row.status}</span></td>
-                  <td className="px-6 py-4 text-right"><div className="flex items-center justify-end gap-2"><button type="button" onClick={() => handleEditClick(row)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit Accommodation Assignee"><Edit2 className="w-3.5 h-3.5" /></button><button type="button" onClick={() => handleDeleteEntry(row.id)} className="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Delete Assignee"><Trash2 className="w-3.5 h-3.5" /></button></div></td>
+                  <td className="px-6 py-4 text-right"><div className="flex items-center justify-end gap-2">{!isReadOnly && <button type="button" onClick={() => handleEditClick(row)} className="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Edit Accommodation Assignee"><Edit2 className="w-3.5 h-3.5" /></button>}{!isReadOnly && <button type="button" onClick={() => handleDeleteEntry(row.id)} className="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Delete Assignee"><Trash2 className="w-3.5 h-3.5" /></button>}</div></td>
                 </tr>
               ))}
             </tbody>

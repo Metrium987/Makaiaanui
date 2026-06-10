@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Car, MapPin, Plus, Trash2, X, RefreshCw, Download, FileSpreadsheet, FileText } from 'lucide-react';
 import { useTransportShifts, useTransportTransfers } from '../hooks/useApi';
+import { useAppStore } from '../store/appStore';
 import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonList } from '../components/Skeleton';
@@ -19,6 +20,8 @@ const DEFAULT_PAX = '1';
 
 export default function Transport() {
   const { t } = useTranslation();
+  const { role } = useAppStore();
+  const isReadOnly = role === 'MEMBER';
   const { shifts, loading: loadingShifts, addShift, updateShift, deleteShift, refresh: refreshShifts, page: shiftsPage, totalCount: shiftsTotal, goToPage: goToShiftsPage } = useTransportShifts();
   const { transfers, loading: loadingTransfers, addTransfer, updateTransfer, deleteTransfer, refresh: refreshTransfers, page: transfersPage, totalCount: transfersTotal, goToPage: goToTransfersPage } = useTransportTransfers();
 
@@ -109,8 +112,8 @@ export default function Transport() {
         <div><h2 className="text-2xl font-bold tracking-tight text-slate-900 uppercase">Fleet & Dispatch</h2><p className="mt-1 text-sm text-slate-500 font-sans">Live scheduling, tracking, and real-time driver management.</p></div>
         <div className="flex items-center gap-2">
           <button type="button" onClick={handleSyncData} className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors flex items-center justify-center" title="Refresh database records"><RefreshCw className={`w-4 h-4 ${actionLoading ? 'animate-spin' : ''}`} /></button>
-          <button type="button" onClick={() => { setActionError(null); setShowShiftModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" />Add Shift</button>
-          <button type="button" onClick={() => { setActionError(null); setShowTransferModal(true); }} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" />Add Transfer</button>
+          {!isReadOnly && (<button type="button" onClick={() => { setActionError(null); setShowShiftModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" />Add Shift</button>)}
+          {!isReadOnly && (<button type="button" onClick={() => { setActionError(null); setShowTransferModal(true); }} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" />Add Transfer</button>)}
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 shrink-0">
@@ -123,7 +126,7 @@ export default function Transport() {
         <div className="xl:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
           <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
-              <input type="checkbox" checked={isAllShiftsSelected} onChange={toggleShiftSelectAll} disabled={loadingShifts || shifts.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />
+              {!isReadOnly && <input type="checkbox" checked={isAllShiftsSelected} onChange={toggleShiftSelectAll} disabled={loadingShifts || shifts.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}
               <h2 className="font-bold text-sm uppercase tracking-wider text-slate-700">Shift Timeline (Today)</h2>
             </div>
             <div className="flex items-center gap-2">
@@ -138,12 +141,12 @@ export default function Transport() {
               {!loadingShifts && shifts.length === 0 && (<div className="text-center text-sm text-slate-400 py-12 bg-white rounded-xl border border-slate-100">No shifts found. Create a shift with driver name & vehicle info to build schedule.</div>)}
               {!loadingShifts && shifts.map((shift, i) => (
                 <div key={shift.id || i} className="bg-white p-4 rounded-lg border border-slate-100 flex items-center gap-4 shadow-sm hover:border-indigo-200 transition-colors">
-                  <input type="checkbox" checked={shiftSelectedIds.has(shift.id)} onChange={() => toggleShiftSelect(shift.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0" />
+                  {!isReadOnly && <input type="checkbox" checked={shiftSelectedIds.has(shift.id)} onChange={() => toggleShiftSelect(shift.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shrink-0" />}
                   <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0"><span className="text-xs font-bold text-indigo-700">{(shift.driver_name || '?').charAt(0)}</span></div>
                   <div className="flex-1 min-w-0"><p className="text-sm font-bold text-slate-900 truncate font-sans">{shift.driver_name}</p><p className="text-xs text-slate-500 truncate font-sans">{shift.vehicle}</p></div>
                   <div className="text-right shrink-0 px-4"><p className="text-xs font-mono text-slate-600">{shift.time}</p><button type="button" onClick={() => handleToggleShiftStatus(shift.id, shift.status)} className={`inline-block mt-1 px-2 py-0.5 text-[10px] font-bold rounded-full uppercase cursor-pointer hover:opacity-85 transition-opacity ${shift.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{shift.status}</button></div>
                   <div className="w-32 h-2 bg-slate-150 rounded-full overflow-hidden shrink-0 hidden sm:block"><div className={`h-full ${shift.status === 'ACTIVE' ? 'bg-indigo-500' : 'bg-transparent'}`} style={{ width: shift.progress || '0%' }}></div></div>
-                  <button type="button" onClick={(e) => handleDeleteShift(shift.id, e)} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Delete Shift"><Trash2 className="w-4 h-4" /></button>
+                  {!isReadOnly && <button type="button" onClick={(e) => handleDeleteShift(shift.id, e)} className="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Delete Shift"><Trash2 className="w-4 h-4" /></button>}
                 </div>
               ))}
             </div>
@@ -154,7 +157,7 @@ export default function Transport() {
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
           <div className="px-6 py-4 border-b border-slate-100 shrink-0 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <input type="checkbox" checked={isAllTransfersSelected} onChange={toggleTransferSelectAll} disabled={loadingTransfers || transfers.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />
+              {!isReadOnly && <input type="checkbox" checked={isAllTransfersSelected} onChange={toggleTransferSelectAll} disabled={loadingTransfers || transfers.length === 0} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />}
               <h2 className="font-bold text-sm uppercase tracking-wider text-slate-700">Dispatch Queue</h2>
             </div>
             <button type="button" onClick={handleExportTransfers} disabled={loadingTransfers || transfers.length === 0} className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-md transition-colors" title="Export transfers to CSV"><Download className="w-3.5 h-3.5" /></button><button type="button" onClick={handleExportTransfersExcel} disabled={loadingTransfers || transfers.length === 0} className="p-1.5 border border-slate-200 hover:bg-emerald-50 text-emerald-600 rounded-md transition-colors" title="Export transfers to Excel"><FileSpreadsheet className="w-3.5 h-3.5" /></button><button type="button" onClick={handleExportTransfersPdf} disabled={loadingTransfers || transfers.length === 0} className="p-1.5 border border-slate-200 hover:bg-red-50 text-red-500 rounded-md transition-colors" title="Export transfers to PDF"><FileText className="w-3.5 h-3.5" /></button>
@@ -167,7 +170,7 @@ export default function Transport() {
               <div key={transfer.id || i} className="p-4 hover:bg-slate-50 transition-colors group cursor-pointer relative">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" checked={transferSelectedIds.has(transfer.id)} onChange={() => toggleTransferSelect(transfer.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" onClick={(e) => e.stopPropagation()} />
+                    {!isReadOnly && <input type="checkbox" checked={transferSelectedIds.has(transfer.id)} onChange={() => toggleTransferSelect(transfer.id)} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" onClick={(e) => e.stopPropagation()} />}
                     <span className="text-[10px] font-bold font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[120px]" title={transfer.id}>{transfer.id.slice(0, 8)}</span>
                   </div>
                   <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded max-w-[200px] truncate" title={transfer.time ?? undefined}>{transfer.time && !isNaN(new Date(transfer.time).getTime()) ? new Date(transfer.time).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}</span>
@@ -180,8 +183,8 @@ export default function Transport() {
                 <div className="mt-4 flex items-center justify-between pl-2">
                   <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-slate-500 tracking-wider uppercase">{transfer.pax} PAX</span>{transfer.assigned_driver && (<span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider">← {transfer.assigned_driver}</span>)}</div>
                   <div className="flex items-center gap-1">
-                    <button type="button" onClick={() => { setActionError(null); setShowAssignModal(transfer); }} className="text-[10px] bg-slate-900 hover:bg-indigo-600 text-white font-bold px-3 py-1.5 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider font-sans">{transfer.assigned_driver ? 'Reassign' : 'Assign'}</button>
-                    <button type="button" onClick={(e) => handleDeleteTransfer(transfer.id, e)} className="p-1 px-2 text-slate-400 hover:text-red-500 transition-colors opacity-100" title="Delete transfer"><Trash2 className="w-3.5 h-3.5" /></button>
+                    {!isReadOnly && (<button type="button" onClick={() => { setActionError(null); setShowAssignModal(transfer); }} className="text-[10px] bg-slate-900 hover:bg-indigo-600 text-white font-bold px-3 py-1.5 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider font-sans">{transfer.assigned_driver ? 'Reassign' : 'Assign'}</button>)}
+                    {!isReadOnly && <button type="button" onClick={(e) => handleDeleteTransfer(transfer.id, e)} className="p-1 px-2 text-slate-400 hover:text-red-500 transition-colors opacity-100" title="Delete transfer"><Trash2 className="w-3.5 h-3.5" /></button>}
                   </div>
                 </div>
               </div>

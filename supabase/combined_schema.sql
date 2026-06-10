@@ -321,19 +321,19 @@ CREATE POLICY "Front-office and Back-office manage accommodation rooms" ON publi
 
 -- Catering Menus
 CREATE POLICY "Select organization catering menus" ON public.catering_menus FOR SELECT 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Back-office and Admin manage catering menus" ON public.catering_menus FOR ALL 
     USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
 
 -- Hospitality Packages
 CREATE POLICY "Select organization hospitality packages" ON public.hospitality_packages FOR SELECT 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Back-office and Admin manage hospitality packages" ON public.hospitality_packages FOR ALL 
     USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
 
 -- Hospitality Guests
 CREATE POLICY "Select organization hospitality guests" ON public.hospitality_guests FOR SELECT 
-    USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+    USING (organization_id = get_user_org() AND get_user_role() IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Back-office and Admin manage hospitality guests" ON public.hospitality_guests FOR ALL 
     USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
 
@@ -534,5 +534,53 @@ BEGIN
 END $$;
 
 -- ============================================================================
--- 9. DONE! Toutes les tables, policies, triggers, contraintes et indexes sont créés.
+-- 9. CLIENT PORTAL — client_requests table (GAP-012 merged)
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS public.client_requests (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  organization_id UUID NOT NULL REFERENCES public.organizations(id),
+  module_type TEXT NOT NULL CHECK (module_type IN ('transport', 'accommodation', 'catering', 'laundry', 'additional_services', 'accreditations', 'deliveries')),
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED', 'IN_PROGRESS', 'COMPLETED')),
+  client_name TEXT DEFAULT '',
+  client_email TEXT DEFAULT '',
+  details JSONB DEFAULT '{}'::jsonb,
+  approved_by UUID REFERENCES public.profiles(id),
+  approved_at TIMESTAMPTZ,
+  rejection_reason TEXT DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_client_requests_org ON public.client_requests(organization_id);
+CREATE INDEX IF NOT EXISTS idx_client_requests_status ON public.client_requests(status);
+CREATE INDEX IF NOT EXISTS idx_client_requests_module ON public.client_requests(module_type);
+CREATE INDEX IF NOT EXISTS idx_client_requests_created ON public.client_requests(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_client_requests_org_status ON public.client_requests(organization_id, status);
+
+-- Auto-update trigger
+DROP TRIGGER IF EXISTS trg_set_updated_at ON public.client_requests;
+CREATE TRIGGER trg_set_updated_at BEFORE UPDATE ON public.client_requests FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- RLS
+ALTER TABLE public.client_requests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view org requests" ON public.client_requests
+  FOR SELECT USING (organization_id = get_user_org());
+
+CREATE POLICY "Users can create requests" ON public.client_requests
+  FOR INSERT WITH CHECK (organization_id = get_user_org());
+
+CREATE POLICY "Back-office and Admin manage requests" ON public.client_requests
+  FOR UPDATE USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+
+CREATE POLICY "Admins can delete requests" ON public.client_requests
+  FOR DELETE USING (organization_id = get_user_org() AND get_user_role() = 'ADMIN');
+
+-- ============================================================================
+-- 10. DONE! Toutes les tables, policies, triggers, contraintes et indexes sont créés.
 -- ============================================================================

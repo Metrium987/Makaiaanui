@@ -22,21 +22,22 @@ import {
   Send
 } from 'lucide-react';
 
-const navigation = [
-  { name: 'common.dashboard', href: '/app', icon: LayoutDashboard },
-  { name: 'common.transport', href: '/app/transport', icon: Car },
-  { name: 'common.accommodation', href: '/app/accommodation', icon: BedDouble },
-  { name: 'common.catering', href: '/app/catering', icon: Coffee },
-  { name: 'common.hospitalities', href: '/app/hospitalities', icon: Ticket },
-  { name: 'common.accreditations', href: '/app/accreditations', icon: BadgeCheck },
-  { name: 'common.deliveries', href: '/app/deliveries', icon: Package },
-  { name: 'Laverie', href: '/app/laverie', icon: WashingMachine },
-  { name: 'common.uniforms', href: '/app/uniforms', icon: Shirt },
-  { name: 'Services Add.', href: '/app/services-additionnels', icon: PlusCircle },
-  { name: 'common.crm', href: '/app/crm', icon: Users },
-  { name: 'Audit Log', href: '/app/audit-log', icon: ClipboardList },
-  { name: 'portal.sidebar', href: '/app/portal', icon: Send },
-  { name: 'common.settings', href: '/app/settings', icon: Settings },
+const ALL_NAVIGATION = [
+  { name: 'common.dashboard', href: '/app', icon: LayoutDashboard, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.transport', href: '/app/transport', icon: Car, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.accommodation', href: '/app/accommodation', icon: BedDouble, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.catering', href: '/app/catering', icon: Coffee, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.hospitalities', href: '/app/hospitalities', icon: Ticket, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.accreditations', href: '/app/accreditations', icon: BadgeCheck, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.deliveries', href: '/app/deliveries', icon: Package, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'Laverie', href: '/app/laverie', icon: WashingMachine, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.uniforms', href: '/app/uniforms', icon: Shirt, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'Services Add.', href: '/app/services-additionnels', icon: PlusCircle, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.crm', href: '/app/crm', icon: Users, roles: ['BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'Audit Log', href: '/app/audit-log', icon: ClipboardList, roles: ['ADMIN'] as AppRole[] },
+  { name: 'portal.sidebar', href: '/app/portal', icon: Send, roles: ['MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
+  { name: 'common.settings', href: '/app/settings', icon: Settings, roles: ['ADMIN'] as AppRole[] },
+  { name: 'User Management', href: '/app/users', icon: Users, roles: ['ADMIN'] as AppRole[] },
 ];
 
 export function Sidebar() {
@@ -55,6 +56,9 @@ export function Sidebar() {
     FRONT_OFFICE: t('roles.frontOffice', 'Front Office'),
   };
   const roleLabel = role ? ROLE_LABELS[role] : t('roles.unknown', 'Unknown');
+  const navigation = role
+    ? ALL_NAVIGATION.filter(item => item.roles.includes(role))
+    : [];
 
   return (
     <div className={cn(
