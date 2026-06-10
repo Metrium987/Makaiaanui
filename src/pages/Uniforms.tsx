@@ -7,6 +7,7 @@ import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
 import Pagination from '../components/Pagination';
+import GroupSelect from '../components/GroupSelect';
 import { exportToCsv } from '../lib/exportCsv';
 
 const UNIFORM_STATUSES = [
@@ -32,6 +33,7 @@ export default function Uniforms() {
   const [deployed, setDeployed] = useState('0');
   const [status, setStatus] = useState('HEALTHY');
 
+  const [selectedGroupId, setSelectedGroupId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -63,7 +65,7 @@ export default function Uniforms() {
       const tot = parseInt(total) || 0; const dep = parseInt(deployed) || 0;
       const diff = tot - dep;
       const autoStatus = diff <= 0 ? 'OUT_OF_STOCK' : diff < 15 ? 'LOW_STOCK' : 'HEALTHY';
-      await addUniform({ item_name: itemName, sizes, total: tot, deployed: dep, status: autoStatus });
+      await addUniform({ item_name: itemName, sizes, total: tot, deployed: dep, status: autoStatus, group_id: selectedGroupId || undefined });
       resetForm(); setShowAddModal(false);
     } catch (err: any) { setActionError(err?.message || 'Failed to register uniform asset.'); } finally { setActionLoading(false); }
   };
@@ -103,7 +105,7 @@ export default function Uniforms() {
     setStatus(item.status || 'HEALTHY'); setActionError(null);
   };
 
-  const resetForm = () => { setItemName(''); setSizes('S, M, L, XL'); setTotal(''); setDeployed('0'); setStatus('HEALTHY'); };
+  const resetForm = () => { setItemName(''); setSizes('S, M, L, XL'); setTotal(''); setDeployed('0'); setStatus('HEALTHY'); setSelectedGroupId(''); };
 
   const handleExportCsv = () => {
     exportToCsv(filteredUniforms, 'uniforms', [
@@ -172,6 +174,7 @@ export default function Uniforms() {
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('uniforms.itemNameLabel', 'Item_name (Description)')}</label><input type="text" value={itemName} onChange={(e) => setItemName(e.target.value)} placeholder="e.g.志愿者红马甲 / Volunteers Red Vest" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 font-sans">{t('uniforms.sizesLabel', 'Available Sizes')}</label><input type="text" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="e.g. S, M, L, XL, XXL" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div className="grid grid-cols-2 gap-4"><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('uniforms.totalLabel', 'Total Acquired')}</label><input type="number" min="0" value={total} onChange={(e) => setTotal(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('uniforms.deployedLabel', 'Deployed Models')}</label><input type="number" min="0" value={deployed} onChange={(e) => setDeployed(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div></div>
+          <GroupSelect value={selectedGroupId} onChange={setSelectedGroupId} />
           <div className="pt-2 flex justify-end gap-2"><button type="button" onClick={() => { setShowAddModal(false); setEditingUniform(null); }} className="px-4 py-2 border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-50 uppercase tracking-wider">{t('common.cancel', 'Cancel')}</button><button type="submit" disabled={actionLoading} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-bold uppercase tracking-wider disabled:bg-indigo-400">{actionLoading ? t('common.saving', 'Saving...') : editingUniform ? t('common.saveChanges', 'Save Changes') : t('uniforms.createVariant', 'Create Variant')}</button></div>
         </form></div></div>
       )}

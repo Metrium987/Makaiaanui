@@ -7,6 +7,7 @@ import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
 import Pagination from '../components/Pagination';
+import GroupSelect from '../components/GroupSelect';
 import { exportToCsv } from '../lib/exportCsv';
 
 const ACCREDITATION_ZONES = ['1', '2', '3', '4', '5', 'V', 'S', 'M', 'P'] as const;
@@ -31,6 +32,7 @@ export default function Accreditations() {
   const [printLogs, setPrintLogs] = useState<string[]>([]);
   const [activePrintingId, setActivePrintingId] = useState<string | null>(null);
 
+  const [selectedGroupId, setSelectedGroupId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -53,7 +55,7 @@ export default function Accreditations() {
     e.preventDefault(); if (!code || !name) { setActionError('Code and Name are required.'); return; }
     setActionLoading(true); setActionError(null);
     try {
-      await addAccreditation({ code: code.toUpperCase().trim(), name, count: Number(count) || 0, pending: Number(pending) || 0, zones: selectedZones });
+      await addAccreditation({ code: code.toUpperCase().trim(), name, count: Number(count) || 0, pending: Number(pending) || 0, zones: selectedZones, group_id: selectedGroupId || undefined });
       resetForm(); setShowAddModal(false);
     } catch (err: any) { setActionError(err?.message || 'Failed to register accreditation class.'); } finally { setActionLoading(false); }
   };
@@ -97,7 +99,7 @@ export default function Accreditations() {
   };
 
   const toggleZone = (zone: string) => { setSelectedZones(prev => prev.includes(zone) ? prev.filter(z => z !== zone) : [...prev, zone]); };
-  const resetForm = () => { setCode(''); setName(''); setCount('0'); setPending('0'); setSelectedZones([]); };
+  const resetForm = () => { setCode(''); setName(''); setCount('0'); setPending('0'); setSelectedZones([]); setSelectedGroupId(''); };
 
   const handleExportCsv = () => {
     exportToCsv(filteredAccreditations, 'accreditations', [
@@ -162,6 +164,7 @@ export default function Accreditations() {
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('accreditations.code', 'Code (Short ID)')}</label><input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g. VOL" className="w-full text-sm border border-slate-200 rounded px-3 py-2 uppercase focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div>
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('accreditations.groupName', 'Group Demographic Name')}</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Volunteers Center Staff" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div className="grid grid-cols-2 gap-4"><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('accreditations.printed', 'Printed Credentials')}</label><input type="number" min="0" value={count} onChange={(e) => setCount(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('accreditations.pending', 'Pending Credentials')}</label><input type="number" min="0" value={pending} onChange={(e) => setPending(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div></div>
+          <GroupSelect value={selectedGroupId} onChange={setSelectedGroupId} />
           <div><p className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-mono">{t('accreditations.zonesAuth', 'Zones Authorization')}</p><div className="grid grid-cols-5 gap-2">{ACCREDITATION_ZONES.map((zone) => { const isChecked = selectedZones.includes(zone); return (<button type="button" key={zone} onClick={() => toggleZone(zone)} className={`py-2 text-xs font-bold border rounded transition-all font-mono ${isChecked ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600'}`}>{zone}</button>); })}</div></div>
           <div className="pt-2 flex justify-end gap-2"><button type="button" onClick={() => { setShowAddModal(false); setEditingAcc(null); }} className="px-4 py-2 border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-50 uppercase tracking-wider">{t('common.cancel', 'Cancel')}</button><button type="submit" disabled={actionLoading} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-bold uppercase tracking-wider disabled:bg-indigo-400">{actionLoading ? t('common.saving', 'Saving...') : editingAcc ? t('accreditations.saveChanges', 'Save Changes') : t('accreditations.createGroup', 'Create Group')}</button></div>
         </form></div></div>

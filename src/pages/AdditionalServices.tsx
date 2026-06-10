@@ -7,6 +7,7 @@ import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
 import Pagination from '../components/Pagination';
+import GroupSelect from '../components/GroupSelect';
 import { exportToCsv } from '../lib/exportCsv';
 import { exportToExcel, exportToPdf } from '../lib/reports';
 
@@ -37,6 +38,7 @@ export default function AdditionalServices() {
   const [soldCount, setSoldCount] = useState('0');
   const [limitCount, setLimitCount] = useState(DEFAULT_LIMIT_COUNT);
 
+  const [selectedGroupId, setSelectedGroupId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -57,7 +59,7 @@ export default function AdditionalServices() {
     e.preventDefault(); if (!title) { setActionError('Service name is required.'); return; }
     setActionLoading(true); setActionError(null);
     try {
-      await addService({ title, service_type: serviceType, price: Number(price) || 0, sold_count: Number(soldCount) || 0, limit_count: Number(limitCount) || 0 });
+      await addService({ title, service_type: serviceType, price: Number(price) || 0, sold_count: Number(soldCount) || 0, limit_count: Number(limitCount) || 0, group_id: selectedGroupId || undefined });
       resetForm(); setShowAddModal(false);
     } catch (err: any) { setActionError(err?.message || 'Failed to publish service catalog entry.'); } finally { setActionLoading(false); }
   };
@@ -90,7 +92,7 @@ export default function AdditionalServices() {
     setLimitCount(svc.limit_count ? String(svc.limit_count) : DEFAULT_LIMIT_COUNT); setActionError(null);
   };
 
-  const resetForm = () => { setTitle(''); setServiceType(SERVICE_TYPE_OPTIONS[4].value); setPrice(DEFAULT_SERVICE_PRICE); setSoldCount('0'); setLimitCount(DEFAULT_LIMIT_COUNT); };
+  const resetForm = () => { setTitle(''); setServiceType(SERVICE_TYPE_OPTIONS[4].value); setPrice(DEFAULT_SERVICE_PRICE); setSoldCount('0'); setLimitCount(DEFAULT_LIMIT_COUNT); setSelectedGroupId(''); };
 
   const additionalServicesColumns = [
     { key: 'title', header: 'Service Name' }, { key: 'service_type', header: 'Type' },
@@ -160,6 +162,7 @@ export default function AdditionalServices() {
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('additionalServices.serviceName', 'Service Option Name')}</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. VIP Guided Lagoon Sunset Tour" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('additionalServices.category', 'Category / Group')}</label><select value={serviceType} onChange={(e) => setServiceType(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500">{SERVICE_TYPE_OPTIONS.map(opt => (<option key={opt.value} value={opt.value}>{opt.label}</option>))}</select></div>
           <div className="grid grid-cols-3 gap-4"><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('additionalServices.priceUnit', 'Price Unit (€)')}</label><input type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('additionalServices.totalSold', 'Total Sold')}</label><input type="number" min="0" value={soldCount} onChange={(e) => setSoldCount(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('additionalServices.limitCapacity', 'Limit Capacity')}</label><input type="number" min="0" value={limitCount} onChange={(e) => setLimitCount(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" placeholder="0 for un-limited" required /></div></div>
+          <GroupSelect value={selectedGroupId} onChange={setSelectedGroupId} />
           <div className="pt-2 flex justify-end gap-2"><button type="button" onClick={() => { setShowAddModal(false); setEditingService(null); }} className="px-4 py-2 border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-50 uppercase tracking-wider">{t('common.cancel', 'Cancel')}</button><button type="submit" disabled={actionLoading} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-bold uppercase tracking-wider disabled:bg-indigo-400">{actionLoading ? t('common.saving', 'Saving...') : editingService ? t('common.saveChanges', 'Save Changes') : t('additionalServices.publishCatalog', 'Publish Catalog')}</button></div>
         </form></div></div>
       )}

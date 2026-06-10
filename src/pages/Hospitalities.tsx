@@ -7,6 +7,7 @@ import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonCard } from '../components/Skeleton';
 import Pagination from '../components/Pagination';
+import GroupSelect from '../components/GroupSelect';
 import { exportToCsv } from '../lib/exportCsv';
 
 const SEAT_SECTIONS = [
@@ -40,6 +41,7 @@ export default function Hospitalities() {
   const [sold, setSold] = useState('0');
   const [total, setTotal] = useState('100');
 
+  const [selectedGroupId, setSelectedGroupId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -61,7 +63,7 @@ export default function Hospitalities() {
   const handleCreatePackage = async (e: React.FormEvent) => {
     e.preventDefault(); if (!title || !price) { setActionError('Title and pricing are required.'); return; }
     setActionLoading(true); setActionError(null);
-    try { const capInt = parseInt(capacity) || 0; await addPackage({ title, price: parseFloat(price) || 0, capacity: capInt, sold: parseInt(sold) || 0, total: parseInt(total) || capInt }); resetForm(); setShowAddModal(false); } catch (err: any) { setActionError(err?.message || 'Failed to create VIP package.'); } finally { setActionLoading(false); }
+    try { const capInt = parseInt(capacity) || 0; await addPackage({ title, price: parseFloat(price) || 0, capacity: capInt, sold: parseInt(sold) || 0, total: parseInt(total) || capInt, group_id: selectedGroupId || undefined }); resetForm(); setShowAddModal(false); } catch (err: any) { setActionError(err?.message || 'Failed to create VIP package.'); } finally { setActionLoading(false); }
   };
 
   const handleUpdatePackage = async (e: React.FormEvent) => {
@@ -97,7 +99,7 @@ export default function Hospitalities() {
     if (e) e.stopPropagation(); try { await deleteGuest(id); } catch (err: any) { alert(err?.message || 'Failed to remove seat assignment.'); }
   };
 
-  const resetForm = () => { setTitle(''); setPrice('150'); setCapacity('100'); setSold('0'); setTotal('100'); };
+  const resetForm = () => { setTitle(''); setPrice('150'); setCapacity('100'); setSold('0'); setTotal('100'); setSelectedGroupId(''); };
 
   const handleRefresh = async () => { setActionLoading(true); try { await refresh(); } catch (err) { console.error(err); } finally { setActionLoading(false); } };
 
@@ -190,6 +192,7 @@ export default function Hospitalities() {
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('hospitalities.packageTitle', 'Package / Location Title')}</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. VIP President Box" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('hospitalities.priceEuro', 'Price (€)')}</label><input type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. 500.00" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div>
           <div className="grid grid-cols-3 gap-4"><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('hospitalities.capacity', 'Capacity')}</label><input type="number" min="0" value={capacity} onChange={(e) => setCapacity(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('hospitalities.soldTickets', 'Sold Tickets')}</label><input type="number" min="0" value={sold} onChange={(e) => setSold(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" /></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('hospitalities.totalSeats', 'Total Seats')}</label><input type="number" min="0" value={total} onChange={(e) => setTotal(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" /></div></div>
+          <GroupSelect value={selectedGroupId} onChange={setSelectedGroupId} />
           <div className="pt-2 flex justify-end gap-2"><button type="button" onClick={() => { setShowAddModal(false); setEditingPackage(null); }} className="px-4 py-2 border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-50 uppercase tracking-wider">{t('common.cancel', 'Cancel')}</button><button type="submit" disabled={actionLoading} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-bold uppercase tracking-wider disabled:bg-indigo-400">{actionLoading ? t('common.saving', 'Saving...') : editingPackage ? t('common.saveChanges', 'Save Changes') : t('hospitalities.createPackage', 'Create Package')}</button></div>
         </form></div></div>
       )}

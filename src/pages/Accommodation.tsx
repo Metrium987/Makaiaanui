@@ -7,6 +7,7 @@ import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonTable } from '../components/Skeleton';
 import Pagination from '../components/Pagination';
+import GroupSelect from '../components/GroupSelect';
 import { exportToCsv } from '../lib/exportCsv';
 import { exportToExcel, exportToPdf } from '../lib/reports';
 
@@ -42,6 +43,7 @@ export default function Accommodation() {
   const [roomType, setRoomType] = useState(DEFAULT_ROOM_TYPE);
   const [checkInDate, setCheckInDate] = useState('');
   const [status, setStatus] = useState<string>(DEFAULT_ACCOMMODATION_STATUS);
+  const [selectedGroupId, setSelectedGroupId] = useState('');
 
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -79,8 +81,8 @@ export default function Accommodation() {
     e.preventDefault(); if (!guestName || !hotelName || !groupName) { setActionError('Guest name, group, and hotel selection are required.'); return; }
     setActionLoading(true); setActionError(null);
     try {
-      await addRoom({ guest_name: guestName, group_name: groupName, hotel_name: hotelName, room_type: roomType, check_in_date: checkInDate || new Date().toISOString().split('T')[0], status });
-      setGuestName(''); setGroupName(''); setHotelName(''); setRoomType('Double'); setCheckInDate(''); setStatus('PENDING'); setShowAddModal(false);
+      await addRoom({ guest_name: guestName, group_name: groupName, hotel_name: hotelName, room_type: roomType, check_in_date: checkInDate || new Date().toISOString().split('T')[0], status, group_id: selectedGroupId || undefined });
+      setGuestName(''); setGroupName(''); setHotelName(''); setRoomType('Double'); setCheckInDate(''); setStatus('PENDING'); setSelectedGroupId(''); setShowAddModal(false);
     } catch (err: any) { setActionError(err?.message || 'Failed to populate rooming list entry.'); } finally { setActionLoading(false); }
   };
 
@@ -175,6 +177,7 @@ export default function Accommodation() {
         <form onSubmit={editingRoom ? handleUpdateRoom : handleCreateRoom} className="p-6 space-y-4">{actionError && (<div className="p-3 bg-red-50 text-red-600 rounded text-xs leading-relaxed font-semibold">{actionError}</div>)}
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Guest / Occupant Name</label><input type="text" value={guestName} onChange={(e) => setGuestName(e.target.value)} placeholder="e.g. Marie Curie" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Group / Delegation</label><input type="text" value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="e.g. France National Olympic Delegation" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
+          <GroupSelect value={selectedGroupId} onChange={setSelectedGroupId} />
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Hotel Name / Location</label><input type="text" value={hotelName} onChange={(e) => setHotelName(e.target.value)} placeholder="e.g. Hilton Olympic Bay Resort" className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" required /></div>
           <div className="grid grid-cols-2 gap-4"><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Room Type</label><select value={roomType} onChange={(e) => setRoomType(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"><option value="Single">Single (€150/n)</option><option value="Double">Double (€180/n)</option><option value="Twin">Twin (€200/n)</option><option value="Suite">Suite (€450/n)</option></select></div><div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Check-In Date</label><input type="date" value={checkInDate} onChange={(e) => setCheckInDate(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></div></div>
           <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Allocation Status</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"><option value="PENDING">PENDING</option><option value="CONFIRMED">CONFIRMED</option><option value="CHECKED_IN">CHECKED_IN</option></select></div>

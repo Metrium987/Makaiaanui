@@ -7,6 +7,7 @@ import { useBatchSelection } from '../hooks/useBatchSelection';
 import { BatchToolbar } from '../components/BatchToolbar';
 import { SkeletonList } from '../components/Skeleton';
 import Pagination from '../components/Pagination';
+import GroupSelect from '../components/GroupSelect';
 import { exportToCsv } from '../lib/exportCsv';
 import { exportToExcel, exportToPdf } from '../lib/reports';
 
@@ -32,6 +33,7 @@ export default function Catering() {
   const [gf, setGf] = useState(DEFAULT_DIETARY_COUNTS.gf);
   const [halal, setHalal] = useState(DEFAULT_DIETARY_COUNTS.halal);
 
+  const [selectedGroupId, setSelectedGroupId] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -52,7 +54,7 @@ export default function Catering() {
   const handleCreateMenu = async (e: React.FormEvent) => {
     e.preventDefault(); if (!title || !startTime || !endTime) { setActionError('Title, start time, and end time are required.'); return; }
     setActionLoading(true); setActionError(null);
-    try { await addMenu({ title, service_type: serviceType, start_time: new Date(startTime).toISOString(), end_time: new Date(endTime).toISOString(), pax: parseInt(pax) || 0, veg: parseInt(veg) || 0, vgn: parseInt(vgn) || 0, gf: parseInt(gf) || 0, halal: parseInt(halal) || 0 }); resetForm(); setShowAddModal(false); } catch (err: any) { setActionError(err?.message || 'Failed to create catering schedule.'); } finally { setActionLoading(false); }
+    try { await addMenu({ title, service_type: serviceType, start_time: new Date(startTime).toISOString(), end_time: new Date(endTime).toISOString(), pax: parseInt(pax) || 0, veg: parseInt(veg) || 0, vgn: parseInt(vgn) || 0, gf: parseInt(gf) || 0, halal: parseInt(halal) || 0, group_id: selectedGroupId || undefined }); resetForm(); setShowAddModal(false); } catch (err: any) { setActionError(err?.message || 'Failed to create catering schedule.'); } finally { setActionLoading(false); }
   };
 
   const handleUpdateMenu = async (e: React.FormEvent) => {
@@ -80,7 +82,7 @@ export default function Catering() {
     setGf(String(menu.gf || 0)); setHalal(String(menu.halal || 0)); setActionError(null);
   };
 
-  const resetForm = () => { setTitle(''); setServiceType('BUFFET'); setStartTime(''); setEndTime(''); setPax(DEFAULT_DIETARY_COUNTS.pax); setVeg(DEFAULT_DIETARY_COUNTS.veg); setVgn(DEFAULT_DIETARY_COUNTS.vgn); setGf(DEFAULT_DIETARY_COUNTS.gf); setHalal(DEFAULT_DIETARY_COUNTS.halal); };
+  const resetForm = () => { setTitle(''); setServiceType('BUFFET'); setStartTime(''); setEndTime(''); setPax(DEFAULT_DIETARY_COUNTS.pax); setVeg(DEFAULT_DIETARY_COUNTS.veg); setVgn(DEFAULT_DIETARY_COUNTS.vgn); setGf(DEFAULT_DIETARY_COUNTS.gf); setHalal(DEFAULT_DIETARY_COUNTS.halal); setSelectedGroupId(''); };
 
   const handleRefresh = async () => { setActionLoading(true); try { await refresh(); } catch (err) { console.error(err); } finally { setActionLoading(false); } };
 
@@ -155,6 +157,7 @@ export default function Catering() {
             <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('catering.covers', 'Covers (PAX)')}</label><input type="number" min="0" value={pax} onChange={(e) => setPax(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div>
             <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('catering.startTime', 'Start Time / Date')}</label><input type="datetime-local" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div>
             <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{t('catering.endTime', 'End Time / Date')}</label><input type="datetime-local" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full text-sm border border-slate-200 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono" required /></div>
+            <div className="sm:col-span-2"><GroupSelect value={selectedGroupId} onChange={setSelectedGroupId} /></div>
           </div>
           <div><p className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-mono">{t('catering.dietaryTitle', 'Special Dietary Counts')}</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
