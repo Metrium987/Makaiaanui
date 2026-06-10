@@ -43,7 +43,7 @@ const ALL_NAVIGATION = [
   { name: 'Audit Log', href: '/app/audit-log', icon: ClipboardList, roles: ['ADMIN'] as AppRole[] },
   { name: 'portal.sidebar', href: '/app/portal', icon: Send, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
   { name: 'common.settings', href: '/app/settings', icon: Settings, roles: ['ADMIN'] as AppRole[] },
-  { name: 'User Management', href: '/app/users', icon: Users, roles: ['ADMIN'] as AppRole[] },
+  { name: 'User Management', href: '/app/users', icon: Users, roles: ['BACK_OFFICE', 'ADMIN'] as AppRole[] },
   { name: 'common.groups', href: '/app/groupes', icon: Flag, roles: ['BACK_OFFICE', 'ADMIN'] as AppRole[] },
 ];
 

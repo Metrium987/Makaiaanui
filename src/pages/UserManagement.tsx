@@ -36,9 +36,7 @@ export default function UserManagement() {
   const [inviteSuccess, setInviteSuccess] = useState(false);
 
   const [actionLoading, setActionLoading] = useState(false);
-  const isAdmin = currentUserRole === 'ADMIN';
-
-
+  const canManageUsers = currentUserRole === 'ADMIN' || currentUserRole === 'BACK_OFFICE';
 
   const handleRoleChange = async (userId: string, newRole: AppRole) => {
     if (userId === currentUserId && newRole !== 'ADMIN') {
@@ -118,7 +116,7 @@ export default function UserManagement() {
           <p className="mt-1 text-sm text-slate-500 font-sans">Manage platform users, role assignments, and organization membership.</p>
         </div>
         <div className="flex items-center gap-2">
-          {isAdmin && (
+          {canManageUsers && (
             <>
               <button
                 type="button"
@@ -178,7 +176,7 @@ export default function UserManagement() {
       </div>
 
       {/* Non-admin fallback */}
-      {!isAdmin && !loading && (
+      {!canManageUsers && !loading && (
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-12 text-center">
           <Shield className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-slate-700 mb-2">Access Restricted</h3>
@@ -189,7 +187,7 @@ export default function UserManagement() {
       )}
 
       {/* User List Table */}
-      {isAdmin && (
+      {canManageUsers && (
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col flex-1 min-h-[400px]">
           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
             <h2 className="font-bold text-sm uppercase tracking-wider text-slate-700">Organization Members</h2>
