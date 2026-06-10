@@ -68,7 +68,7 @@ export default function AdditionalServices() {
     e.preventDefault(); if (!editingService) return;
     setActionLoading(true); setActionError(null);
     try {
-      await updateService(editingService.id, { title, service_type: serviceType, price: Number(price) || 0, sold_count: Number(soldCount) || 0, limit_count: Number(limitCount) || 0 });
+      await updateService(editingService.id, { title, service_type: serviceType, price: Number(price) || 0, sold_count: Number(soldCount) || 0, limit_count: Number(limitCount) || 0, group_id: selectedGroupId || undefined });
       resetForm(); setEditingService(null);
     } catch (err: any) { setActionError(err?.message || 'Failed to update service catalog entry.'); } finally { setActionLoading(false); }
   };
@@ -89,7 +89,7 @@ export default function AdditionalServices() {
   const handleEditClick = (svc: any) => {
     setEditingService(svc); setTitle(svc.title); setServiceType(svc.service_type || SERVICE_TYPE_OPTIONS[4].value);
     setPrice(String(svc.price || 0)); setSoldCount(String(svc.sold_count || 0));
-    setLimitCount(svc.limit_count ? String(svc.limit_count) : DEFAULT_LIMIT_COUNT); setActionError(null);
+    setLimitCount(svc.limit_count ? String(svc.limit_count) : DEFAULT_LIMIT_COUNT); setSelectedGroupId(svc.group_id || ''); setActionError(null);
   };
 
   const resetForm = () => { setTitle(''); setServiceType(SERVICE_TYPE_OPTIONS[4].value); setPrice(DEFAULT_SERVICE_PRICE); setSoldCount('0'); setLimitCount(DEFAULT_LIMIT_COUNT); setSelectedGroupId(''); };

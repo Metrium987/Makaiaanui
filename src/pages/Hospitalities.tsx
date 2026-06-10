@@ -69,7 +69,7 @@ export default function Hospitalities() {
   const handleUpdatePackage = async (e: React.FormEvent) => {
     e.preventDefault(); if (!editingPackage) return;
     setActionLoading(true); setActionError(null);
-    try { const capInt = parseInt(capacity) || 0; await updatePackage(editingPackage.id, { title, price: parseFloat(price) || 0, capacity: capInt, sold: parseInt(sold) || 0, total: parseInt(total) || capInt }); resetForm(); setEditingPackage(null); } catch (err: any) { setActionError(err?.message || 'Failed to update VIP package.'); } finally { setActionLoading(false); }
+    try { const capInt = parseInt(capacity) || 0; await updatePackage(editingPackage.id, { title, price: parseFloat(price) || 0, capacity: capInt, sold: parseInt(sold) || 0, total: parseInt(total) || capInt, group_id: selectedGroupId || undefined }); resetForm(); setEditingPackage(null); } catch (err: any) { setActionError(err?.message || 'Failed to update VIP package.'); } finally { setActionLoading(false); }
   };
 
   const handleDeletePackage = async (id: string, e: React.MouseEvent) => {
@@ -85,7 +85,7 @@ export default function Hospitalities() {
 
   const handleEditClick = (pkg: any) => {
     setEditingPackage(pkg); setTitle(pkg.title); setPrice(pkg.price !== undefined && pkg.price !== null ? String(pkg.price) : '150');
-    setCapacity(String(pkg.capacity || 100)); setSold(String(pkg.sold || 0)); setTotal(String(pkg.total || 100)); setActionError(null);
+    setCapacity(String(pkg.capacity || 100)); setSold(String(pkg.sold || 0)); setTotal(String(pkg.total || 100)); setSelectedGroupId(pkg.group_id || ''); setActionError(null);
   };
 
   const handleSeatAssign = async (e: React.FormEvent) => {

@@ -309,7 +309,7 @@ export function useAccommodationRooms() {
     return data;
   };
 
-  const updateRoom = async (id: string, updates: Partial<{ guest_name: string; group_name: string; hotel_name: string; room_type: string; check_in_date: string; status: string }>) => {
+  const updateRoom = async (id: string, updates: Partial<{ guest_name: string; group_name: string; hotel_name: string; room_type: string; check_in_date: string; status: string; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('accommodation_rooms')
       .update(updates).eq('id', id).select().single();
@@ -381,7 +381,7 @@ export function useDeliveries() {
     return data;
   };
 
-  const updateDelivery = async (id: string, updates: Partial<{ site: string; status: string; scheduled_time: string; detail: string }>) => {
+  const updateDelivery = async (id: string, updates: Partial<{ site: string; status: string; scheduled_time: string; detail: string; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('deliveries').update(updates).eq('id', id).select().single();
     if (error) throw error;
@@ -457,7 +457,7 @@ export function useHospitalityPackages() {
     return data;
   };
 
-  const updatePackage = async (id: string, updates: Partial<{ title: string; price: number; capacity: number; sold: number; total: number }>) => {
+  const updatePackage = async (id: string, updates: Partial<{ title: string; price: number; capacity: number; sold: number; total: number; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('hospitality_packages').update(updates).eq('id', id).select().single();
     if (error) throw error;
@@ -597,7 +597,7 @@ export function useAccreditations() {
     return data;
   };
 
-  const updateAccreditation = async (id: string, updates: Partial<{ code: string; name: string; count: number; pending: number; zones: string[] }>) => {
+  const updateAccreditation = async (id: string, updates: Partial<{ code: string; name: string; count: number; pending: number; zones: string[]; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('accreditations').update(updates).eq('id', id).select().single();
     if (error) throw error;
@@ -668,7 +668,7 @@ export function useUniforms() {
     return data;
   };
 
-  const updateUniform = async (id: string, updates: Partial<{ item_name: string; sizes: string; total: number; deployed: number; status: string }>) => {
+  const updateUniform = async (id: string, updates: Partial<{ item_name: string; sizes: string; total: number; deployed: number; status: string; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('uniforms').update(updates).eq('id', id).select().single();
     if (error) throw error;
@@ -739,7 +739,7 @@ export function useLaundryRequests() {
     return data;
   };
 
-  const updateRequest = async (id: string, updates: Partial<{ client_name: string; group_name: string; service_type: string; items_count: number; status: string }>) => {
+  const updateRequest = async (id: string, updates: Partial<{ client_name: string; group_name: string; service_type: string; items_count: number; status: string; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('laundry_requests').update(updates).eq('id', id).select().single();
     if (error) throw error;
@@ -810,7 +810,7 @@ export function useAdditionalServices() {
     return data;
   };
 
-  const updateService = async (id: string, updates: Partial<{ title: string; service_type: string; price: number; sold_count: number; limit_count: number }>) => {
+  const updateService = async (id: string, updates: Partial<{ title: string; service_type: string; price: number; sold_count: number; limit_count: number; group_id?: string }>) => {
     const { data, error } = await supabase
       .from('additional_services').update(updates).eq('id', id).select().single();
     if (error) throw error;
@@ -907,7 +907,7 @@ export function useCateringMenus() {
     return mapped;
   };
 
-  const updateMenu = async (id: string, updates: Partial<{ title: string; start_time: string; end_time: string; service_type: string; pax: number; veg: number; vgn: number; gf: number; halal: number }>) => {
+  const updateMenu = async (id: string, updates: Partial<{ title: string; start_time: string; end_time: string; service_type: string; pax: number; veg: number; vgn: number; gf: number; halal: number; group_id?: string }>) => {
     const { pax, veg, vgn, gf, halal, title, ...rest } = updates;
     const updatePayload: any = { ...rest };
     if (title !== undefined) updatePayload.title = title;

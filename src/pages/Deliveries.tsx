@@ -92,7 +92,7 @@ export default function Deliveries() {
     if (!editingDelivery) return;
     setActionLoading(true); setActionError(null);
     try {
-      await updateDelivery(editingDelivery.id, { site, status, scheduled_time: scheduledTime ? new Date(scheduledTime).toISOString() : new Date().toISOString(), detail });
+      await updateDelivery(editingDelivery.id, { site, status, scheduled_time: scheduledTime ? new Date(scheduledTime).toISOString() : new Date().toISOString(), detail, group_id: selectedGroupId || undefined });
       resetForm(); setEditingDelivery(null);
     } catch (err: any) { setActionError(err?.message || 'Failed to update delivery record.'); }
     finally { setActionLoading(false); }
@@ -114,7 +114,7 @@ export default function Deliveries() {
   };
 
   const handleEditClick = (delivery: any) => {
-    setEditingDelivery(delivery); setSite(delivery.site || 'Main Stadium'); setStatus(delivery.status || 'PENDING');
+    setEditingDelivery(delivery); setSite(delivery.site || 'Main Stadium'); setStatus(delivery.status || 'PENDING'); setSelectedGroupId(delivery.group_id || '');
     if (delivery.scheduled_time) { const d = new Date(delivery.scheduled_time); setScheduledTime(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)); }
     else setScheduledTime('');
     setDetail(delivery.detail || ''); setActionError(null);

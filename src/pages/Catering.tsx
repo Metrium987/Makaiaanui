@@ -60,7 +60,7 @@ export default function Catering() {
   const handleUpdateMenu = async (e: React.FormEvent) => {
     e.preventDefault(); if (!editingMenu) return;
     setActionLoading(true); setActionError(null);
-    try { await updateMenu(editingMenu.id, { title, service_type: serviceType, start_time: new Date(startTime).toISOString(), end_time: new Date(endTime).toISOString(), pax: parseInt(pax) || 0, veg: parseInt(veg) || 0, vgn: parseInt(vgn) || 0, gf: parseInt(gf) || 0, halal: parseInt(halal) || 0 }); resetForm(); setEditingMenu(null); } catch (err: any) { setActionError(err?.message || 'Failed to update catering schedule.'); } finally { setActionLoading(false); }
+    try {      await updateMenu(editingMenu.id, { title, service_type: serviceType, start_time: new Date(startTime).toISOString(), end_time: new Date(endTime).toISOString(), pax: parseInt(pax) || 0, veg: parseInt(veg) || 0, vgn: parseInt(vgn) || 0, gf: parseInt(gf) || 0, halal: parseInt(halal) || 0, group_id: selectedGroupId || undefined }); resetForm(); setEditingMenu(null); } catch (err: any) { setActionError(err?.message || 'Failed to update catering schedule.'); } finally { setActionLoading(false); }
   };
 
   const handleDeleteMenu = async () => {
@@ -79,7 +79,7 @@ export default function Catering() {
     setEditingMenu(menu); setTitle(menu.title); setServiceType(menu.service_type || 'BUFFET');
     setStartTime(toLocalDatetimeString(menu.start_time)); setEndTime(toLocalDatetimeString(menu.end_time));
     setPax(String(menu.pax || 0)); setVeg(String(menu.veg || 0)); setVgn(String(menu.vgn || 0));
-    setGf(String(menu.gf || 0)); setHalal(String(menu.halal || 0)); setActionError(null);
+    setGf(String(menu.gf || 0)); setHalal(String(menu.halal || 0)); setSelectedGroupId(menu.group_id || ''); setActionError(null);
   };
 
   const resetForm = () => { setTitle(''); setServiceType('BUFFET'); setStartTime(''); setEndTime(''); setPax(DEFAULT_DIETARY_COUNTS.pax); setVeg(DEFAULT_DIETARY_COUNTS.veg); setVgn(DEFAULT_DIETARY_COUNTS.vgn); setGf(DEFAULT_DIETARY_COUNTS.gf); setHalal(DEFAULT_DIETARY_COUNTS.halal); setSelectedGroupId(''); };

@@ -64,7 +64,7 @@ export default function Accreditations() {
     e.preventDefault(); if (!editingAcc) return;
     setActionLoading(true); setActionError(null);
     try {
-      await updateAccreditation(editingAcc.id, { code: code.toUpperCase().trim(), name, count: Number(count) || 0, pending: Number(pending) || 0, zones: selectedZones });
+      await updateAccreditation(editingAcc.id, { code: code.toUpperCase().trim(), name, count: Number(count) || 0, pending: Number(pending) || 0, zones: selectedZones, group_id: selectedGroupId || undefined });
       resetForm(); setEditingAcc(null);
     } catch (err: any) { setActionError(err?.message || 'Failed to update accreditation class.'); } finally { setActionLoading(false); }
   };
@@ -95,7 +95,7 @@ export default function Accreditations() {
 
   const handleEditClick = (pop: any) => {
     setEditingAcc(pop); setCode(pop.code); setName(pop.name); setCount(String(pop.count || 0));
-    setPending(String(pop.pending || 0)); setSelectedZones(pop.zones || []); setActionError(null);
+    setPending(String(pop.pending || 0)); setSelectedZones(pop.zones || []); setSelectedGroupId(pop.group_id || ''); setActionError(null);
   };
 
   const toggleZone = (zone: string) => { setSelectedZones(prev => prev.includes(zone) ? prev.filter(z => z !== zone) : [...prev, zone]); };

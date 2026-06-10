@@ -89,7 +89,7 @@ export default function Accommodation() {
   const handleUpdateRoom = async (e: React.FormEvent) => {
     e.preventDefault(); if (!editingRoom) return;
     setActionLoading(true); setActionError(null);
-    try { await updateRoom(editingRoom.id, { guest_name: guestName, group_name: groupName, hotel_name: hotelName, room_type: roomType, check_in_date: checkInDate, status }); setEditingRoom(null); } catch (err: any) { setActionError(err?.message || 'Failed to update entry.'); } finally { setActionLoading(false); }
+    try { await updateRoom(editingRoom.id, { guest_name: guestName, group_name: groupName, hotel_name: hotelName, room_type: roomType, check_in_date: checkInDate, status, group_id: selectedGroupId || undefined }); setEditingRoom(null); } catch (err: any) { setActionError(err?.message || 'Failed to update entry.'); } finally { setActionLoading(false); }
   };
 
   const handleDeleteEntry = async (id: string) => {
@@ -99,7 +99,7 @@ export default function Accommodation() {
 
   const handleEditClick = (room: any) => {
     setEditingRoom(room); setGuestName(room.guest_name); setGroupName(room.group_name); setHotelName(room.hotel_name);
-    setRoomType(room.room_type || 'Double'); setCheckInDate(room.check_in_date ? new Date(room.check_in_date).toISOString().split('T')[0] : ''); setStatus(room.status || 'PENDING'); setActionError(null);
+    setRoomType(room.room_type || 'Double'); setCheckInDate(room.check_in_date ? new Date(room.check_in_date).toISOString().split('T')[0] : ''); setStatus(room.status || 'PENDING'); setSelectedGroupId(room.group_id || ''); setActionError(null);
   };
 
   const handleRefreshData = async () => { setActionLoading(true); try { await refresh(); } catch (err) { console.error(err); } finally { setActionLoading(false); } };

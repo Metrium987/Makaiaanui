@@ -82,11 +82,11 @@ export default function Laundry() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault(); if (!editingRequest) return;
     setActionLoading(true); setActionError(null);
-    try { await updateRequest(editingRequest.id, { client_name: clientName, group_name: groupName, service_type: serviceType, items_count: parseInt(itemsCount) || 0, status }); resetForm(); setEditingRequest(null); } catch (err: any) { setActionError(err?.message || 'Failed to update laundry request.'); } finally { setActionLoading(false); }
+    try { await updateRequest(editingRequest.id, { client_name: clientName, group_name: groupName, service_type: serviceType, items_count: parseInt(itemsCount) || 0, status, group_id: selectedGroupId || undefined }); resetForm(); setEditingRequest(null); } catch (err: any) { setActionError(err?.message || 'Failed to update laundry request.'); } finally { setActionLoading(false); }
   };
   const handleDelete = async (id: string, e: React.MouseEvent) => { e.stopPropagation(); if (!window.confirm('Delete this laundry request?')) return; try { await deleteRequest(id); } catch (err: any) { alert(err?.message || 'Failed to delete.'); } };
   const handleQuickStatusTransition = async (req: any, nextStatus: string, e: React.MouseEvent) => { e.stopPropagation(); try { await updateRequest(req.id, { status: nextStatus }); } catch (err: any) { alert('Failed to update status.'); } };
-  const handleEditClick = (req: any) => { setEditingRequest(req); setClientName(req.client_name); setGroupName(req.group_name); setServiceType(req.service_type || LAUNDRY_SERVICE_TYPES[0].value); setItemsCount(String(req.items_count || 5)); setStatus(req.status || LAUNDRY_STATUSES[0].value); setActionError(null); };
+  const handleEditClick = (req: any) => { setEditingRequest(req); setClientName(req.client_name); setGroupName(req.group_name); setServiceType(req.service_type || LAUNDRY_SERVICE_TYPES[0].value); setItemsCount(String(req.items_count || 5)); setStatus(req.status || LAUNDRY_STATUSES[0].value); setSelectedGroupId(req.group_id || ''); setActionError(null); };
   const resetForm = () => { setClientName(''); setGroupName(''); setServiceType(LAUNDRY_SERVICE_TYPES[0].value); setItemsCount('5'); setStatus(LAUNDRY_STATUSES[0].value); setSelectedGroupId(''); };
   const laundryColumns = [{ key: 'id', header: 'Request ID' },{ key: 'client_name', header: 'Client' },{ key: 'group_name', header: 'Group' },{ key: 'service_type', header: 'Service Type' },{ key: 'items_count', header: 'Items Count' },{ key: 'status', header: 'Status' }];
   const handleExportCsv = () => { exportToCsv(filteredRequests, 'laundry', laundryColumns); };

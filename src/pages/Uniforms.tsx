@@ -77,7 +77,7 @@ export default function Uniforms() {
       const tot = parseInt(total) || 0; const dep = parseInt(deployed) || 0;
       const diff = tot - dep;
       const autoStatus = diff <= 0 ? 'OUT_OF_STOCK' : diff < 15 ? 'LOW_STOCK' : 'HEALTHY';
-      await updateUniform(editingUniform.id, { item_name: itemName, sizes, total: tot, deployed: dep, status: autoStatus });
+      await updateUniform(editingUniform.id, { item_name: itemName, sizes, total: tot, deployed: dep, status: autoStatus, group_id: selectedGroupId || undefined });
       resetForm(); setEditingUniform(null);
     } catch (err: any) { setActionError(err?.message || 'Failed to update uniform asset.'); } finally { setActionLoading(false); }
   };
@@ -102,7 +102,7 @@ export default function Uniforms() {
   const handleEditClick = (item: any) => {
     setEditingUniform(item); setItemName(item.item_name); setSizes(item.sizes);
     setTotal(String(item.total || 0)); setDeployed(String(item.deployed || 0));
-    setStatus(item.status || 'HEALTHY'); setActionError(null);
+    setStatus(item.status || 'HEALTHY'); setSelectedGroupId(item.group_id || ''); setActionError(null);
   };
 
   const resetForm = () => { setItemName(''); setSizes('S, M, L, XL'); setTotal(''); setDeployed('0'); setStatus('HEALTHY'); setSelectedGroupId(''); };
