@@ -33,7 +33,16 @@
   },
   "dashboard": {
     "title": "Centre de Contrôle",
-    "subtitle": "Vue globale de votre logistique et statut des modules."
+    "subtitle": "Vue globale de votre logistique et statut des modules.",
+    "member": {
+      "title": "Catalogue & Commandes",
+      "subtitle": "Parcourez les services disponibles et soumettez vos demandes.",
+      "yourGroup": "Votre groupe :",
+      "portalCta": "Une demande spécifique ?",
+      "portalDesc": "Soumettez une demande personnalisée via le portail client. Suivi en temps réel.",
+      "goPortal": "Accéder au portail",
+      "modulesTitle": "Services disponibles"
+    }
   },
   "login": {
     "title": "Accès Système",

@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useActivityLogs, useTransportShifts, useAccommodationRooms, useDeliveries } from '../hooks/useApi';
 import { useAppStore } from '../store/appStore';
+import { supabase } from '../lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { SkeletonCard, SkeletonList } from '../components/Skeleton';
-import { Car, BedDouble, Coffee, Ticket, BadgeCheck, Package, Shirt, WashingMachine, PlusCircle, Send, ArrowRight } from 'lucide-react';
+import { Car, BedDouble, Coffee, Ticket, BadgeCheck, Package, Shirt, WashingMachine, PlusCircle, Send, ArrowRight, Users } from 'lucide-react';
 
 const MEMBER_MODULES = [
   { name: 'common.transport', href: '/app/transport', icon: Car, descKey: 'dashboard.member.transportDesc' },
@@ -28,6 +30,16 @@ export default function Dashboard() {
   const { deliveries, loading: deliveriesLoading } = useDeliveries();
 
   const isMember = role === 'MEMBER';
+  const groupId = useAppStore(s => s.groupId);
+  const [groupName, setGroupName] = useState<string>('');
+  
+  useEffect(() => {
+    if (isMember && groupId) {
+      supabase.from('groups').select('name').eq('id', groupId).single()
+        .then(({ data }) => { if (data) setGroupName(data.name); });
+    }
+  }, [isMember, groupId]);
+  
   const appName = import.meta.env.VITE_APP_NAME || 'Makaiaanui';
 
   // ── MEMBER Dashboard ──────────────────────────────────────────
@@ -40,7 +52,17 @@ export default function Dashboard() {
             {t('dashboard.member.title', 'Catalogue & Commandes')}
           </h2>
           <p className="mt-1 text-sm text-slate-500">
-            {t('dashboard.member.subtitle', 'Parcourez les services disponibles et soumettez vos demandes.')}
+            {groupName ? (
+              <>
+                {t('dashboard.member.yourGroup', 'Votre groupe :')}{' '}
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md font-semibold text-xs">
+                  <Users className="w-3 h-3" />
+                  {groupName}
+                </span>
+              </>
+            ) : (
+              t('dashboard.member.subtitle', 'Parcourez les services disponibles et soumettez vos demandes.')
+            )}
           </p>
         </div>
 

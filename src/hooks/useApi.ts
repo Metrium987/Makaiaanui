@@ -123,6 +123,9 @@ export function useTransportShifts() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchShifts = async (p: number) => {
     try {
@@ -133,6 +136,7 @@ export function useTransportShifts() {
         .from('transport_shifts').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setShifts(data || []);
@@ -189,6 +193,9 @@ export function useTransportTransfers() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchTransfers = async (p: number) => {
     try {
@@ -199,6 +206,7 @@ export function useTransportTransfers() {
         .from('transport_transfers').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setTransfers(data || []);
@@ -255,6 +263,9 @@ export function useAccommodationRooms() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchRooms = async (p: number) => {
     try {
@@ -265,6 +276,7 @@ export function useAccommodationRooms() {
         .from('accommodation_rooms').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setRooms(data || []);
@@ -323,6 +335,9 @@ export function useDeliveries() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchDeliveries = async (p: number) => {
     try {
@@ -333,6 +348,7 @@ export function useDeliveries() {
         .from('deliveries').select('*', { count: 'exact' }).is('deleted_at', null).order('scheduled_time', { ascending: true })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setDeliveries(data || []);
@@ -390,6 +406,9 @@ export function useHospitalityPackages() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchPackages = async (p: number) => {
     try {
@@ -400,6 +419,7 @@ export function useHospitalityPackages() {
         .from('hospitality_packages').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setPackages(data || []);
@@ -462,6 +482,9 @@ export function useHospitalityGuests() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchGuests = async (p: number) => {
     try {
@@ -473,6 +496,7 @@ export function useHospitalityGuests() {
         .select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: true })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setGuests(data || []);
@@ -527,6 +551,9 @@ export function useAccreditations() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchAccreditations = async (p: number) => {
     try {
@@ -537,6 +564,7 @@ export function useAccreditations() {
         .from('accreditations').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setAccreditations(data || []);
@@ -594,6 +622,9 @@ export function useUniforms() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchUniforms = async (p: number) => {
     try {
@@ -604,6 +635,7 @@ export function useUniforms() {
         .from('uniforms').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setUniforms(data || []);
@@ -661,6 +693,9 @@ export function useLaundryRequests() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchRequests = async (p: number) => {
     try {
@@ -671,6 +706,7 @@ export function useLaundryRequests() {
         .from('laundry_requests').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setRequests(data || []);
@@ -728,6 +764,9 @@ export function useAdditionalServices() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchServices = async (p: number) => {
     try {
@@ -738,6 +777,7 @@ export function useAdditionalServices() {
         .from('additional_services').select('*', { count: 'exact' }).is('deleted_at', null).order('created_at', { ascending: false })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setServices(data || []);
@@ -795,6 +835,9 @@ export function useCateringMenus() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
+  const groupId = useAppStore(s => s.groupId);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const mapMenuFromDb = (menu: any) => ({
     ...menu,
@@ -815,6 +858,7 @@ export function useCateringMenus() {
         .from('catering_menus').select('*', { count: 'exact' }).is('deleted_at', null).order('start_time', { ascending: true })
         .range(from, to);
       if (organizationId) query.eq('organization_id', organizationId);
+      if (isMember && groupId) query.eq('group_id', groupId);
       const { data, count, error } = await query;
       if (error) throw error;
       setMenus((data || []).map(mapMenuFromDb));

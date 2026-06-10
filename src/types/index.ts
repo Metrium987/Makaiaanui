@@ -11,6 +11,7 @@ export interface Profile {
   email: string;
   role: AppRole;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -53,6 +54,7 @@ export interface TransportShiftRow {
   status: string;
   progress: string | null;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -64,6 +66,7 @@ export interface TransportTransferRow {
   pax: number;
   assigned_driver: string | null;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -79,6 +82,7 @@ export interface AccommodationRoomRow {
   check_in_date: string | null;
   status: string;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -98,6 +102,7 @@ export interface CateringMenu {
   gf: number;
   halal: number;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -112,6 +117,7 @@ export interface HospitalityPackageRow {
   sold: number;
   total: number;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -121,6 +127,7 @@ export interface HospitalityGuestRow {
   guest: string;
   seat_num: string;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -135,6 +142,7 @@ export interface AccreditationRow {
   pending: number;
   zones: string[];
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -148,6 +156,7 @@ export interface DeliveryRow {
   scheduled_time: string | null;
   detail: string | null;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -162,6 +171,7 @@ export interface LaundryRequestRow {
   items_count: number;
   status: string;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -176,6 +186,7 @@ export interface UniformRow {
   deployed: number;
   status: string;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 
@@ -190,6 +201,7 @@ export interface AdditionalServiceRow {
   sold_count: number;
   limit_count: number;
   organization_id: string;
+  group_id: string | null;
   created_at: string;
 }
 

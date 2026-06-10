@@ -1,7 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '../../store/appStore';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
 import type { AppRole } from '../../types';
 import { cn } from '../../lib/utils';
 import { 
@@ -43,8 +45,16 @@ const ALL_NAVIGATION = [
 export function Sidebar() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { isSidebarOpen, toggleSidebar, role } = useAppStore();
+  const { isSidebarOpen, toggleSidebar, role, groupId } = useAppStore();
   const { user } = useAuth();
+  const [groupName, setGroupName] = useState<string>('');
+  
+  useEffect(() => {
+    if (role === 'MEMBER' && groupId) {
+      supabase.from('groups').select('name').eq('id', groupId).single()
+        .then(({ data }) => { if (data) setGroupName(data.name); });
+    }
+  }, [role, groupId]);
   
   const appName = import.meta.env.VITE_APP_NAME || 'Playground';
   const orgName = user?.email?.split('@')[1] || 'Playground Org';
@@ -108,6 +118,9 @@ export function Sidebar() {
             <div className="flex flex-col overflow-hidden">
               <span className="text-xs font-semibold text-slate-900 truncate">{orgName}</span>
               <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest truncate">{roleLabel}</span>
+              {groupName && (
+                <span className="text-[10px] text-indigo-500 font-semibold truncate mt-0.5">{groupName}</span>
+              )}
             </div>
           </div>
         </div>

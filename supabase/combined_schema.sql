@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS public.transport_shifts (
     status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
     progress VARCHAR(50) DEFAULT '0%',
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -116,6 +117,7 @@ CREATE TABLE IF NOT EXISTS public.transport_transfers (
     pax INTEGER NOT NULL DEFAULT 1,
     assigned_driver VARCHAR(255),
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -131,6 +133,7 @@ CREATE TABLE IF NOT EXISTS public.accommodation_rooms (
     check_in_date DATE,
     status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -149,6 +152,7 @@ CREATE TABLE IF NOT EXISTS public.catering_menus (
     gf INTEGER DEFAULT 0,
     halal INTEGER DEFAULT 0,
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -163,6 +167,7 @@ CREATE TABLE IF NOT EXISTS public.hospitality_packages (
     sold INTEGER NOT NULL DEFAULT 0,
     total INTEGER NOT NULL DEFAULT 0,
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -175,6 +180,7 @@ CREATE TABLE IF NOT EXISTS public.hospitality_guests (
     guest VARCHAR(255) NOT NULL,
     seat_num VARCHAR(50) NOT NULL,
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -189,6 +195,7 @@ CREATE TABLE IF NOT EXISTS public.accreditations (
     pending INTEGER NOT NULL DEFAULT 0,
     zones VARCHAR(50)[] NOT NULL DEFAULT '{}',
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -203,6 +210,7 @@ CREATE TABLE IF NOT EXISTS public.uniforms (
     deployed INTEGER NOT NULL DEFAULT 0,
     status VARCHAR(50) NOT NULL DEFAULT 'HEALTHY',
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -217,6 +225,7 @@ CREATE TABLE IF NOT EXISTS public.laundry_requests (
     items_count INTEGER NOT NULL DEFAULT 0,
     status VARCHAR(50) NOT NULL DEFAULT 'COLLECTED',
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -231,6 +240,7 @@ CREATE TABLE IF NOT EXISTS public.additional_services (
     sold_count INTEGER NOT NULL DEFAULT 0,
     limit_count INTEGER NOT NULL DEFAULT 0,
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -244,6 +254,7 @@ CREATE TABLE IF NOT EXISTS public.deliveries (
     scheduled_time TIMESTAMP WITH TIME ZONE,
     detail TEXT,
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -404,6 +415,19 @@ CREATE TRIGGER on_auth_user_created
 -- Ensure group_id column exists on existing profiles (idempotent)
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
 
+-- Ensure group_id column exists on all module tables (idempotent, P3.3)
+ALTER TABLE public.transport_shifts ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.transport_transfers ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.accommodation_rooms ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.catering_menus ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.hospitality_packages ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.hospitality_guests ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.accreditations ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.uniforms ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.laundry_requests ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.additional_services ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+ALTER TABLE public.deliveries ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS chk_profiles_role;
 ALTER TABLE public.profiles ADD CONSTRAINT chk_profiles_role CHECK (role IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
@@ -446,6 +470,28 @@ CREATE INDEX IF NOT EXISTS idx_organizations_domain ON public.organizations(doma
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 CREATE INDEX IF NOT EXISTS idx_profiles_org ON public.profiles(organization_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON public.profiles(created_at);
+CREATE INDEX IF NOT EXISTS idx_transport_shifts_group_id ON public.transport_shifts(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_transport_transfers_group_id ON public.transport_transfers(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_accommodation_rooms_group_id ON public.accommodation_rooms(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_catering_menus_group_id ON public.catering_menus(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_hospitality_packages_group_id ON public.hospitality_packages(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_hospitality_guests_group_id ON public.hospitality_guests(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_accreditations_group_id ON public.accreditations(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_uniforms_group_id ON public.uniforms(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_laundry_requests_group_id ON public.laundry_requests(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_additional_services_group_id ON public.additional_services(group_id);
+
+CREATE INDEX IF NOT EXISTS idx_deliveries_group_id ON public.deliveries(group_id);
+
 CREATE INDEX IF NOT EXISTS idx_profiles_group_id ON public.profiles(group_id);
 
 CREATE INDEX IF NOT EXISTS idx_activity_logs_org ON public.activity_logs(organization_id);

@@ -33,7 +33,16 @@
   },
   "dashboard": {
     "title": "Data Control Center",
-    "subtitle": "Global overview of your logistics and live modular status."
+    "subtitle": "Global overview of your logistics and live modular status.",
+    "member": {
+      "title": "Catalog & Orders",
+      "subtitle": "Browse available services and submit your requests.",
+      "yourGroup": "Your group:",
+      "portalCta": "A specific request?",
+      "portalDesc": "Submit a custom request via the client portal. Real-time tracking.",
+      "goPortal": "Go to Portal",
+      "modulesTitle": "Available Services"
+    }
   },
   "login": {
     "title": "System Access",
