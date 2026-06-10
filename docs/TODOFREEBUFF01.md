@@ -207,26 +207,26 @@
 | HC-013 | `Deliveries.tsx` | 297-300 | Same sites repeated in form | MED | 🟢 → ID 024 |
 | HC-014 | `Accreditations.tsx` | 59 | `AVAILABLE_ZONES` hardcoded array | MED | 🟢 → ID 025 |
 | HC-015 | `Hospitalities.tsx` | 235-238 | Seat section options hardcoded (French labels) | MED | 🟢 → ID 026 |
-| HC-016 | `Catering.tsx` | 162-163 | Default dietary counts `'50','0','0','0','0'` | LOW | 🔴 PENDING |
+| HC-016 | `Catering.tsx` | 162-163 | Default dietary counts `'50','0','0','0','0'` | LOW | 🟢 → ID 035 |
 | HC-017 | `Catering.tsx` | 252-257 | Service format options hardcoded (BUFFET, PLATED...) | LOW | 🟢 → ID 028 |
-| HC-018 | `Login.tsx` | 94 | `'Account created successfully...'` not in i18n | MED | 🔴 PENDING |
-| HC-019 | `Login.tsx` | 209-210 | `"Or continue with"`, `"Sign in with Google"` not in i18n | MED | 🔴 PENDING |
+| HC-018 | `Login.tsx` | 94 | `'Account created successfully...'` not in i18n | MED | 🟢 → ID 038 |
+| HC-019 | `Login.tsx` | 209-210 | `"Or continue with"`, `"Sign in with Google"` not in i18n | MED | 🟢 → ID 038 |
 | HC-020 | `Settings.tsx` | 10 | `'Pacific Games Tahiti 2027'` hardcoded workspace name | MED | 🟢 → ID 033 |
 | HC-021 | `Settings.tsx` | 11 | `'#4F46E5'` hardcoded primary color | LOW | 🟢 → ID 033 |
 | HC-022 | `Settings.tsx` | 38 | `'portal.tahiti2027.com'` hardcoded domain | LOW | 🟢 → ID 033 |
-| HC-023 | `supabase.ts` | 7-8 | `''` empty fallback for env vars (style nit) | LOW | 🔴 PENDING |
-| HC-024 | `appStore.ts` | 74 | `'user@example.com'` fallback email (security) | MED | 🔴 PENDING |
+| HC-023 | `supabase.ts` | 7-8 | `''` empty fallback for env vars (style nit) | LOW | 🟢 → ID 038 |
+| HC-024 | `appStore.ts` | 74 | `'user@example.com'` fallback email (security) | MED | 🟢 → ID 011 |
 | HC-025 | `appStore.ts` | 76 | `'ADMIN'` default role on auto-create | **INCLUDED IN BUG-001** | 🟡 |
-| HC-026 | `appStore.ts` | 71 | `'Default Organization'` auto-create name | MED | 🔴 PENDING |
+| HC-026 | `appStore.ts` | 71 | `'Default Organization'` auto-create name | MED | 🟢 → ID 011 |
 | HC-027 | `Transport.tsx` | 182-186 | `'08:00 - 16:00'` default shift hours | LOW | 🟢 → ID 029 |
 | HC-028 | `Uniforms.tsx` | 105 | `'S, M, L, XL'` default sizes | LOW | 🟢 → ID 030 |
-| HC-029 | `Uniforms.tsx` | 106 | `'100'` default total | LOW | 🔴 PENDING |
-| HC-030 | `Uniforms.tsx` | 331 | `'100'` default total (same as HC-029) | LOW | 🔴 PENDING |
+| HC-029 | `Uniforms.tsx` | 105 | `'100'` default total | LOW | 🟢 → ID 036 |
+| HC-030 | `Uniforms.tsx` | 331 | `'100'` default total (same as HC-029) | LOW | 🟢 → ID 036 |
 | HC-031 | `AdditionalServices.tsx` | 97 | `'100'` default limit count | LOW | 🟢 → ID 031 |
 | HC-032 | `AdditionalServices.tsx` | 93 | `'50'` default price | LOW | 🟢 → ID 031 |
-| HC-033 | `Header.tsx` | 32 | `'System Live'` fallback in `t()` call | LOW | 🔴 PENDING |
-| HC-034 | `Accommodation.tsx` | 24 | `'Hébergement & Allotements'` (French title not in i18n) | MED | 🔴 PENDING |
-| HC-035 | `Accommodation.tsx` | 256 | `ent search...` truncated placeholder | LOW | 🔴 PENDING |
+| HC-033 | `Header.tsx` | 32 | `'System Live'` fallback in `t()` call | LOW | 🟢 → ID 038 |
+| HC-034 | `Accommodation.tsx` | 24 | `'Hébergement & Allotements'` (French title not in i18n) | MED | 🟢 → ID 051 |
+| HC-035 | `Accommodation.tsx` | 256 | `ent search...` truncated placeholder | LOW | 🟢 → ID 037 |
 
 **Strategy:** Systematically move values to i18n for UI text, config/env for business values, DB for site/hotel/zone data. Batch by file.
 
@@ -242,24 +242,24 @@
 
 | Ref | File | Item | Fix | Priority | Status |
 |-----|------|------|-----|----------|--------|
-| DC-001 | `types/index.ts:14-18` | `TransportShift` interface (unused) | Remove | LOW | 🔴 |
-| DC-002 | `types/index.ts:20-26` | `Organization` interface (unused) | Remove | LOW | 🔴 |
-| DC-003 | `types/index.ts:1-4` | `EntityStatus` type (unused) | Remove | LOW | 🔴 |
+| DC-001 | `types/index.ts:14-18` | `TransportShift` interface (unused) | Remove | LOW | 🟢 → ID 018 |
+| DC-002 | `types/index.ts:20-26` | `Organization` interface (unused) | Remove | LOW | 🟢 → ID 018 |
+| DC-003 | `types/index.ts:1-4` | `EntityStatus` type (unused) | Remove | LOW | 🟢 → ID 018 |
 | DC-004 | `types/index.ts:6-12` | `Profile` interface (misleading types — **see BUG-008**) | Rewrite | HIGH | 🟢 |
-| DC-005 | `useApi.ts:18` | `import { TransportShift }` (unused import) | Remove | LOW | 🔴 |
-| DC-006 | `package.json` | `"motion"` dependency (unused) | Remove | LOW | 🔴 |
-| DC-007 | `package.json` | `"express"`, `"@types/express"` (unused) | Remove | LOW | 🔴 |
-| DC-008 | `package.json` | `"dotenv"` (unused) | Remove | LOW | 🔴 |
-| DC-009 | `package.json` | `"tsx"` (unused devDep) | Remove | LOW | 🔴 |
-| DC-010 | `AppLayout.tsx:1,5,7` | `React` import + `children` prop (React 19) | Clean up | LOW | 🔴 |
-| DC-011 | `Transport.tsx:19` | `Check` icon import (unused) | Remove | LOW | 🔴 |
-| DC-012 | `Accommodation.tsx:17,24` | `Check` icon import (unused) | Remove | LOW | 🔴 |
-| DC-013 | `Accommodation.tsx:13` | `DollarSign` icon import (unused) | Remove | LOW | 🔴 |
-| DC-014 | `Accreditations.tsx:15` | `CheckCircle` icon import (unused) | Remove | LOW | 🔴 |
-| DC-015 | `Accreditations.tsx:14` | `Filter` icon import (unused) | Remove | LOW | 🔴 |
-| DC-016 | `Transport.tsx:24-25` | `Check` icon (duplicate of DC-011) | Remove | LOW | 🔴 |
-| DC-017 | `Deliveries.tsx:23` | `Search` icon import (unused) | Remove | LOW | 🔴 |
-| DC-018 | `metadata.json` | `"majorCapabilities": [..GEMINI_API..]` (no implementation) | Remove/correct | LOW | 🔴 |
+| DC-005 | `useApi.ts:18` | `import { TransportShift }` (unused import) | Remove | LOW | 🟢 → ID 018 |
+| DC-006 | `package.json` | `"motion"` dependency (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-007 | `package.json` | `"express"`, `"@types/express"` (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-008 | `package.json` | `"dotenv"` (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-009 | `package.json` | `"tsx"` (unused devDep) | Remove | LOW | 🟢 → ID 039 |
+| DC-010 | `AppLayout.tsx:1,5,7` | `React` import + `children` prop (React 19) | Clean up | LOW | 🟢 → ID 039 |
+| DC-011 | `Transport.tsx:19` | `Check` icon import (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-012 | `Accommodation.tsx:17,24` | `Check` icon import (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-013 | `Accommodation.tsx:13` | `DollarSign` icon import | SKIP — used in cost card |
+| DC-014 | `Accreditations.tsx:15` | `CheckCircle` icon import (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-015 | `Accreditations.tsx:14` | `Filter` icon import (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-016 | `Transport.tsx:24-25` | `Check` icon (duplicate of DC-011) | Remove | LOW | 🟢 → ID 039 |
+| DC-017 | `Deliveries.tsx:23` | `Search` icon import (unused) | Remove | LOW | 🟢 → ID 039 |
+| DC-018 | `metadata.json` | `"majorCapabilities": [..GEMINI_API..]` (no implementation) | Remove | LOW | 🟢 → ID 039 |
 
 ---
 
@@ -287,72 +287,81 @@
 **Source:** `10_gaps_application.md` — Gap #2
 **Description:** No React error boundary. Any unhandled exception crashes the entire app with a white screen.
 **Fix:** Create `<ErrorBoundary>` component wrapping `<App>` in `main.tsx`. Show a styled fallback UI with "Reload" button.
-**Status:** 🔴 PENDING
+**Status:** 🟢 → ID 040
 
 ---
 
 ### GAP-002: Loading Skeletons (MEDIUM)
 **Source:** `10_gaps_application.md` — Gap #3
 **Description:** All loading states are basic "Loading..." text. Poor UX.
-**Fix:** Create `<Skeleton>` component. Apply to all 14 pages' loading states.
-**Status:** 🔴 PENDING
+**Fix:** Created `<Skeleton>` component (SkeletonBlock, SkeletonCard, SkeletonTable, SkeletonList). Applied to Dashboard + all 10 data pages (Transport, Accommodation, Catering, Hospitalities, Accreditations, Deliveries, Laundry, Uniforms, AdditionalServices, Crm).
+**Status:** 🟢 → ID 041
 
 ---
 
 ### GAP-003: Pagination (MEDIUM)
 **Source:** `10_gaps_application.md` — Gap #4
 **Description:** Tables load all records at once. Performance degrades with hundreds of entries.
-**Fix:** Add `.range()` to Supabase queries. Create `<Pagination>` component. Apply to all table views.
-**Status:** 🔴 PENDING
+**Fix:** All 12 data hooks now have server-side pagination via `.range()` + `count: 'exact'`. Added pagination to `useHospitalityGuests` and `useProfiles` (the last 2 hooks missing it). Added `<Pagination>` to Hospitalities seating tab and UserManagement. Fixed metric cards to use `totalCount` instead of filtered array length. All pages paginate 10 per page.
+**Status:** 🟢 FIXED → ID 055
 
 ---
 
 ### GAP-004: Data Export (MEDIUM)
 **Source:** `10_gaps_application.md` — Gap #5
 **Description:** No CSV/PDF export in any module. Required by 5/9 module specs (Cahier des Charges).
-**Fix:** Add "Export CSV" button to all table headers. Use a library like `papaparse` or `jspdf`.
-**Status:** 🔴 PENDING
+**Fix:** Installed `papaparse` + `@types/papaparse`. Created `src/lib/exportCsv.ts` utility (Papa.unparse + Blob download). Added "Export CSV" button (Download icon) to all 10 data pages between refresh and add/create buttons. Each page exports with proper column headers matching its table schema.
+**Status:** 🟢 → ID 043
 
 ---
 
 ### GAP-005: Password Reset Flow (HIGH)
 **Source:** `10_gaps_application.md` — Gap #8, `09_bug_list.md` Bug #8
 **Description:** Login page has no "Forgot password" link. Users who forget their password are permanently locked out.
-**Fix:** Add "Forgot password?" link below password field. Implement `supabase.auth.resetPasswordForEmail()` flow with a dedicated reset page.
-**Status:** 🔴 PENDING
+**Fix:** Add "Forgot password?" link below password field. Implement `supabase.auth.resetPasswordForEmail()` flow with dedicated `ResetPassword.tsx` page.
+**Status:** 🟢 → ID 040
 
 ---
 
 ### GAP-006: User Management UI (HIGH)
 **Source:** `10_gaps_application.md` — Gap #9
 **Description:** "Users & Tenancy" button in Settings is a dead button (no content).
-**Fix:** Implement user list with role management, invite flow, and profile editing using `profiles` table.
-**Status:** 🔴 PENDING
+**Fix:** Created `useProfiles()` hook (fetch, updateRole, deleteProfile, inviteUser via signUp + trigger + resetPasswordForEmail). Created `UserManagement.tsx` page with user list table, role dropdown select, delete with confirmation, invite modal with email + role grid. Metric cards (total/admins/front-office/back-office). Non-admin fallback with Shield icon. Wired Settings button to `/app/users`. Added route + restricted path protection.
+**Status:** 🟢 → ID 044
 
 ---
 
 ### GAP-007: Audit Trail Viewer (LOW)
 **Source:** `10_gaps_application.md` — Gap #15
 **Description:** `activity_logs` table exists but no dedicated viewer page exists.
-**Fix:** Create a dedicated audit log page or panel with search, date filter, and export.
-**Status:** 🔴 PENDING
+**Fix:** Created `useAuditLogs()` hook (20/page pagination, ilike search, gte/lte date range). Created `AuditLog.tsx` page with filter bar (search + date from/to + Apply/Clear), audit table (timestamp, action, detail, user_id), metric cards, SkeletonTable, Pagination, Export CSV. Added `/app/audit-log` route + "Audit Log" sidebar entry with ClipboardList icon.
+**Status:** 🟢 → ID 045
 
 ---
 
 ### GAP-008: Batch Operations (MEDIUM)
 **Source:** `10_gaps_application.md` — Gap #26
 **Description:** No checkbox selection on tables. Cannot bulk-update status or bulk-delete.
-**Fix:** Add checkbox column to tables. Add "Select All" and bulk action toolbar.
-**Status:** 🔴 PENDING
+**Fix:** Created `useBatchSelection` hook + `BatchToolbar` component. Applied to all 10 data pages:
+- Deliveries.tsx → checkbox + BatchToolbar with DELIVERY_STATUSES
+- Laundry.tsx → checkbox + BatchToolbar with LAUNDRY_STATUSES
+- Uniforms.tsx → checkbox + BatchToolbar with UNIFORM_STATUSES (HEALTHY/LOW_STOCK/OUT_OF_STOCK)
+- Accommodation.tsx → checkbox + BatchToolbar with ACCOMMODATION_STATUSES (PENDING/CONFIRMED/CHECKED_IN)
+- Transport.tsx → dual batch: shifts (checkbox + ACTIVE/OFFLINE status) + transfers (checkbox + delete-only)
+- AdditionalServices.tsx → checkbox + delete-only BatchToolbar
+- Accreditations.tsx → checkbox + delete-only BatchToolbar
+- Catering.tsx → list view with checkboxes + delete-only BatchToolbar
+- Hospitalities.tsx → card grid with checkboxes + delete-only BatchToolbar
+- Crm.tsx → checkbox + selection toolbar (delete not wired — hooks don't expose delete)
+**Status:** 🟢 → ID 046 + ID 047
 
 ---
 
 ### GAP-009: TypeScript Strict Mode (MEDIUM)
 **Source:** `10_gaps_application.md` — Gap #30
 **Description:** `tsconfig.json` has no `"strict": true`. Many type errors are suppressed.
-**Fix:** Enable `"strict": true` in `tsconfig.json`. Fix all resulting type errors (likely 50+).
-**Warning:** High effort but significantly improves code quality.
-**Status:** 🔴 PENDING
+**Fix:** Enabled `"strict": true`. Installed `@types/react` + `@types/react-dom`. Fixed ~75 errors: generics in exportCsv.ts/reports.ts, useState literal narrowing (added `<string>` annotations), replaced `parseInt`/`parseFloat` with `Number()` where args typed as `number`, fixed `null`→`undefined` in Transport.tsx JSX props, changed `DEFAULT_DIETARY_COUNTS` from `as const` to `Record<string, string>`. Clean: 0 errors.
+**Status:** 🟢 FIXED → ID 054
 
 ---
 
@@ -360,7 +369,7 @@
 **Source:** `10_gaps_application.md` — Gaps #18, #19
 **Description:** No `updated_at` on any table. All deletes are hard deletes.
 **Fix:** Add `updated_at TIMESTAMPTZ DEFAULT NOW()` to all tables. Add `deleted_at TIMESTAMPTZ` for soft delete support. Update hooks to use `update` instead of `delete` where appropriate.
-**Status:** 🔴 PENDING
+**Status:** 🟢 FIXED → ID 050
 
 ---
 
@@ -368,31 +377,31 @@
 **Source:** `10_gaps_application.md` — Gaps #16, #17; `11_reconciliation` SQL Schema gaps
 **Description:** No CHECK constraints on status fields (any string accepted). No indexes beyond PK. No unique constraints on codes/names.
 **Fix:** Add CHECK constraints: `status IN ('PENDING','CONFIRMED',...)`. Add indexes on `organization_id`, `status`, `created_at`. Add UNIQUE on accreditation codes, uniform names.
-**Status:** 🔴 PENDING
+**Status:** 🟢 FIXED → ID 049
 
 ---
 
 ### GAP-012: Front Office (Client Portal) [HIGH]
 **Source:** `11_specification_vs_code_reconciliation.md` — Largest missing feature
 **Description:** Spec requires a white-label client portal where clients make and track requests. Current UI is back-office only.
-**Fix:** New major feature — requires dedicated planning. Not a simple bug fix.
-**Status:** 🔴 PENDING
+**Fix:** Created `client_requests` SQL table (CHECK constraints, indexes, RLS). Created `useClientRequests()` hook (pagination, status/module filters, CRUD, auto-approved_at). Created `ClientPortal.tsx` page: 6 status tabs, module filter dropdown, search, metric cards, request table, inline approve/reject/start/complete/delete workflow, create modal, rejection reason modal. Added route `/app/portal` + sidebar entry (Send icon). 40+ i18n keys in en.json/fr.json.
+**Status:** 🟢 FIXED → ID 056
 
 ---
 
 ### GAP-013: Reports & Export Engine [HIGH]
 **Source:** `11_specification_vs_code_reconciliation.md` — Required by 5/9 modules
 **Description:** Spec requires Excel/PDF generation for transport, accommodation, catering, laundry, and additional services modules.
-**Fix:** Implement report generation layer. Required by core workflow Step 5.
-**Status:** 🔴 PENDING
+**Fix:** Created `src/lib/reports.ts` with `exportToExcel()` (xlsx/SheetJS) and `exportToPdf()` (jsPDF + jspdf-autotable). Added Excel (green) and PDF (red) icon buttons next to existing CSV buttons on all 5 required module pages. Column schemas are DRY — defined once and shared across CSV/Excel/PDF exports. PDFs include styled indigo headers, alternate row shading, title/subtitle, and page numbers.
+**Status:** 🟢 FIXED → ID 053
 
 ---
 
 ### GAP-014: i18n Coverage Expansion [MEDIUM]
 **Source:** `11_reconciliation` Section 3 (i18n Framework Coverage); `06_hardcode_list.md` multiple items
 **Description:** i18n framework exists but only 1/14 pages (Landing.tsx) has full coverage. 10 pages have zero i18n usage. Login.tsx has partial coverage.
-**Fix:** Systematically add translation keys for all hardcoded UI strings in each page. Prioritize user-facing pages (Login, Dashboard, then module pages).
-**Status:** 🔴 PENDING
+**Fix:** Added 240+ i18n keys to en.json/fr.json (additionalServices + crm + common + laundry/uniforms/deliveries/accreditations/catering/hospitalities additions). Added useTranslation to all 8 module pages. Replaced all visible hardcoded UI strings (titles, subtitles, buttons, table headers, form labels, modal titles, status/filter labels) with t() calls. Fixed 2 filter bugs where ALL_STATUSES_LABEL/ALL_SITES_LABEL constants would break in French locale.
+**Status:** 🟢 FIXED → ID 052
 
 ---
 
@@ -406,11 +415,11 @@
 | 2 | `transport_shifts.time VARCHAR` kept as-is (shift hours = display range) | BUG-004 | ✅ WONTFIX | — |
 | 3 | `transport_transfers.time VARCHAR→TIMESTAMPTZ` + `assigned_driver VARCHAR(255)` | BUG-003 + BUG-005 | ✅ DONE → ID 013/014 | `20240101000002_fix_transport_schema.sql` |
 | 4 | `hospitality_packages.price VARCHAR→NUMERIC(10,2)` | BUG-006 | ✅ DONE → ID 015 | `20240101000003_fix_hospitality_price.sql` |
-| 5 | Add `updated_at TIMESTAMPTZ DEFAULT NOW()` to all tables | GAP-010 | 🔴 PENDING | — |
-| 6 | Add `deleted_at TIMESTAMPTZ` for soft delete support | GAP-010 | 🔴 PENDING | — |
-| 7 | Add CHECK constraints on all status columns | GAP-011 | 🔴 PENDING | — |
-| 8 | Add indexes: `organization_id`, `status`, `created_at` | GAP-011 | 🔴 PENDING | — |
-| 9 | Add UNIQUE constraints on accreditation codes, uniform names | GAP-011 | 🔴 PENDING | — |
+| 5 | Add `updated_at TIMESTAMPTZ DEFAULT NOW()` to all tables | GAP-010 | ✅ DONE → ID 050 | — |
+| 6 | Add `deleted_at TIMESTAMPTZ` for soft delete support | GAP-010 | ✅ DONE → ID 050 | — |
+| 7 | Add CHECK constraints on all status columns | GAP-011 | ✅ DONE → ID 049 | — |
+| 8 | Add indexes: `organization_id`, `status`, `created_at` | GAP-011 | ✅ DONE → ID 049 | — |
+| 9 | Add UNIQUE constraints on accreditation codes, uniform names | GAP-011 | ✅ DONE → ID 049 | — |
 
 ---
 

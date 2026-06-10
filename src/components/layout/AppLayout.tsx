@@ -1,11 +1,10 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { useAppStore } from '../../store/appStore';
 import { cn } from '../../lib/utils';
 
-export function AppLayout({ children }: { children?: React.ReactNode }) {
+export function AppLayout() {
   const { isSidebarOpen } = useAppStore();
 
   return (
@@ -17,7 +16,7 @@ export function AppLayout({ children }: { children?: React.ReactNode }) {
         isSidebarOpen ? "ml-64" : "ml-16"
       )}>
         <div className="p-8 max-w-[1400px] mx-auto flex flex-col gap-6">
-          {children || <Outlet />}
+          <Outlet />
         </div>
       </main>
     </div>

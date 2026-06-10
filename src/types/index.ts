@@ -192,3 +192,27 @@ export interface AdditionalServiceRow {
   organization_id: string;
   created_at: string;
 }
+
+// ============================================================================
+// Module: Client Portal (GAP-012)
+// ============================================================================
+export type ClientRequestModuleType = 'transport' | 'accommodation' | 'catering' | 'laundry' | 'additional_services' | 'accreditations' | 'deliveries';
+
+export type ClientRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_PROGRESS' | 'COMPLETED';
+
+export interface ClientRequest {
+  id: string;
+  organization_id: string;
+  module_type: ClientRequestModuleType;
+  title: string;
+  description: string;
+  status: ClientRequestStatus;
+  client_name: string;
+  client_email: string;
+  details: Record<string, unknown>;
+  approved_by: string | null;
+  approved_at: string | null;
+  rejection_reason: string;
+  created_at: string;
+  updated_at: string;
+}

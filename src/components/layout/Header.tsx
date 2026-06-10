@@ -23,7 +23,7 @@ export function Header() {
       <div className="flex w-full h-full items-center justify-end gap-6">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="text-xs font-medium text-slate-500 uppercase tracking-widest hidden sm:inline-block">{t('header.systemLive', 'System Live')}</span>
+          <span className="text-xs font-medium text-slate-500 uppercase tracking-widest hidden sm:inline-block">{t('header.systemLive')}</span>
         </div>
         <div className="w-px h-6 bg-slate-200"></div>
         <button 

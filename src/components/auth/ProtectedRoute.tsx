@@ -4,7 +4,7 @@ import { useAppStore } from '../../store/appStore';
 import { useTranslation } from 'react-i18next';
 
 // Routes restricted for FRONT_OFFICE users
-const RESTRICTED_PATHS = ['/app/settings', '/app/crm'] as const;
+const RESTRICTED_PATHS = ['/app/settings', '/app/crm', '/app/users'] as const;
 
 export function ProtectedRoute() {
   const { user, loading: authLoading } = useAuth();

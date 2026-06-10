@@ -16,7 +16,9 @@ import {
   Settings, 
   ChevronLeft,
   WashingMachine,
-  PlusCircle
+  PlusCircle,
+  ClipboardList,
+  Send
 } from 'lucide-react';
 
 const navigation = [
@@ -31,6 +33,8 @@ const navigation = [
   { name: 'common.uniforms', href: '/app/uniforms', icon: Shirt },
   { name: 'Services Add.', href: '/app/services-additionnels', icon: PlusCircle },
   { name: 'common.crm', href: '/app/crm', icon: Users },
+  { name: 'Audit Log', href: '/app/audit-log', icon: ClipboardList },
+  { name: 'portal.sidebar', href: '/app/portal', icon: Send },
   { name: 'common.settings', href: '/app/settings', icon: Settings },
 ];
 
