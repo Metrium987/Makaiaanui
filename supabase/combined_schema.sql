@@ -293,6 +293,8 @@ CREATE POLICY "Users can view their own organization" ON public.organizations FO
 -- Profiles
 CREATE POLICY "Users can view their own profile" ON public.profiles FOR SELECT 
     USING (auth.uid() = id);
+CREATE POLICY "Back-office and Admin can view all profiles in org" ON public.profiles FOR SELECT 
+    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
 CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE 
     USING (auth.uid() = id);
 
