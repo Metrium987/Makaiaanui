@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     email VARCHAR(255) NOT NULL,
     role VARCHAR(50) DEFAULT 'MEMBER',
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE,
+    group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -380,9 +381,12 @@ CREATE POLICY "Back-office and Admin manage groups" ON public.groups FOR ALL
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
+DECLARE
+  v_group_id UUID;
 BEGIN
-  INSERT INTO public.profiles (id, email, role)
-  VALUES (new.id, new.email, 'MEMBER');
+  v_group_id := (new.raw_user_meta_data->>'group_id')::UUID;
+  INSERT INTO public.profiles (id, email, role, group_id)
+  VALUES (new.id, new.email, 'MEMBER', v_group_id);
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -397,6 +401,9 @@ CREATE TRIGGER on_auth_user_created
 -- ============================================================================
 
 -- CHECK constraints on status/type/role columns (DROP first for idempotency)
+-- Ensure group_id column exists on existing profiles (idempotent)
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL;
+
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS chk_profiles_role;
 ALTER TABLE public.profiles ADD CONSTRAINT chk_profiles_role CHECK (role IN ('MEMBER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
 
@@ -439,6 +446,7 @@ CREATE INDEX IF NOT EXISTS idx_organizations_domain ON public.organizations(doma
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 CREATE INDEX IF NOT EXISTS idx_profiles_org ON public.profiles(organization_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON public.profiles(created_at);
+CREATE INDEX IF NOT EXISTS idx_profiles_group_id ON public.profiles(group_id);
 
 CREATE INDEX IF NOT EXISTS idx_activity_logs_org ON public.activity_logs(organization_id);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_created_at ON public.activity_logs(created_at DESC);
@@ -622,6 +630,9 @@ CREATE TRIGGER trg_set_updated_at BEFORE UPDATE ON public.groups FOR EACH ROW EX
 
 -- RLS
 ALTER TABLE public.groups ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view groups" ON public.groups
+  FOR SELECT USING (true);
 
 CREATE POLICY "Users can view org groups" ON public.groups
   FOR SELECT USING (organization_id = get_user_org());

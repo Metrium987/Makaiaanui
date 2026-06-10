@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, hasCredentials } from '../lib/supabase';
 import { ArrowRight, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
@@ -15,8 +15,22 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
+  const [groupsLoading, setGroupsLoading] = useState(false);
   
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSignUp && hasCredentials) {
+      setGroupsLoading(true);
+      supabase.from('groups').select('id, name').order('name')
+        .then(({ data, error }) => {
+          if (!error && data) setGroups(data);
+          setGroupsLoading(false);
+        });
+    }
+  }, [isSignUp]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +48,8 @@ export default function Login() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            data: selectedGroupId ? { group_id: selectedGroupId } : undefined
           }
         });
 
@@ -245,6 +260,25 @@ export default function Login() {
                         className="block w-full appearance-none rounded-lg border border-slate-200 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm transition-colors"
                         placeholder="••••••••"
                       />
+                    </div>
+                  </div>
+                )}
+
+                {isSignUp && (
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 tracking-wider uppercase">{t('login.group', 'Group / Delegation')}</label>
+                    <div className="mt-1">
+                      <select
+                        value={selectedGroupId}
+                        onChange={(e) => setSelectedGroupId(e.target.value)}
+                        disabled={groupsLoading}
+                        className="block w-full appearance-none rounded-lg border border-slate-200 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm transition-colors bg-white"
+                      >
+                        <option value="">{groupsLoading ? t('common.loading', 'Loading...') : t('login.selectGroup', '-- Select your group --')}</option>
+                        {groups.map(g => (
+                          <option key={g.id} value={g.id}>{g.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 )}

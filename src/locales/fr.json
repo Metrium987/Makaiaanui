@@ -60,7 +60,9 @@
     "resetEmailSent": "Lien de réinitialisation envoyé. Vérifiez votre boîte email.",
     "backToSignIn": "Retour à la connexion",
     "configError": "Erreur de configuration système. L'application n'est pas connectée au serveur d'authentification. Veuillez contacter votre administrateur système.",
-    "invalidCredentials": "Identifiants invalides. Veuillez vérifier votre email et mot de passe."
+    "invalidCredentials": "Identifiants invalides. Veuillez vérifier votre email et mot de passe.",
+    "group": "Groupe / Délégation",
+    "selectGroup": "-- Choisissez votre groupe --"
   },
   "resetPassword": {
     "title": "Nouveau mot de passe",
