@@ -28,15 +28,14 @@ BEGIN
     -- ========================================================================
     -- 2. GROUPS (Countries / Delegations)
     -- ========================================================================
-    INSERT INTO public.groups (id, name, organization_id) VALUES
-        (gen_random_uuid(), 'France', v_org_id),
-        (gen_random_uuid(), 'Monaco', v_org_id),
-        (gen_random_uuid(), 'Japan', v_org_id),
-        (gen_random_uuid(), 'Brazil', v_org_id),
-        (gen_random_uuid(), 'Germany', v_org_id)
-    RETURNING id INTO v_g1;
+    INSERT INTO public.groups (name, organization_id) VALUES
+        ('France', v_org_id),
+        ('Monaco', v_org_id),
+        ('Japan', v_org_id),
+        ('Brazil', v_org_id),
+        ('Germany', v_org_id);
 
-    -- Since RETURNING only gives us the last one, fetch all
+    -- Fetch all group IDs
     SELECT ARRAY_AGG(id ORDER BY name) INTO v_groups FROM public.groups WHERE organization_id = v_org_id;
     v_g1 := v_groups[1]; v_g2 := v_groups[2]; v_g3 := v_groups[3]; v_g4 := v_groups[4]; v_g5 := v_groups[5];
 
@@ -92,7 +91,8 @@ BEGIN
         ('Monaco President Box', 1200.00, 10, 8, 10, v_org_id, v_g2, v_now),
         ('Japan Gold Pass', 350.00, 30, 20, 30, v_org_id, v_g3, v_now),
         ('Brazil Silver Lounge', 180.00, 40, 15, 40, v_org_id, v_g4, v_now),
-        ('Germany VIP Deck', 500.00, 15, 10, 15, v_org_id, v_g5, v_now);
+        ('Germany VIP Deck', 500.00, 15, 10, 15, v_org_id, v_g5, v_now)
+    ON CONFLICT (title, organization_id) DO NOTHING;
 
     INSERT INTO public.hospitality_guests (section, guest, seat_num, organization_id, group_id, created_at) VALUES
         ('Tribune d''Honneur', 'Marie Curie', 'A-12', v_org_id, v_g1, v_now),
@@ -104,7 +104,8 @@ BEGIN
         ('Prestige Lounge', 'Maria Silva', 'D-22', v_org_id, v_g4, v_now),
         ('Prestige Lounge', 'Pedro Santos', 'D-23', v_org_id, v_g4, v_now),
         ('Prestige Lounge', 'Hans Mueller', 'D-24', v_org_id, v_g5, v_now),
-        ('Prestige Lounge', 'Erika Schmidt', 'D-25', v_org_id, v_g5, v_now);
+        ('Prestige Lounge', 'Erika Schmidt', 'D-25', v_org_id, v_g5, v_now)
+    ON CONFLICT (section, seat_num, organization_id) DO NOTHING;
 
     -- ========================================================================
     -- 7. ACCREDITATIONS — Permits & Populations
@@ -114,7 +115,8 @@ BEGIN
         ('MON', 'Monaco Protocol', 15, 0, ARRAY['1','2','3','4','5','V','S'], v_org_id, v_g2, v_now),
         ('JPN', 'Japan Olympic', 40, 5, ARRAY['1','2','3','5'], v_org_id, v_g3, v_now),
         ('BRA', 'Brazil Delegation', 35, 2, ARRAY['1','2','3','4','5'], v_org_id, v_g4, v_now),
-        ('GER', 'Germany Olympic', 30, 1, ARRAY['1','2','3','5'], v_org_id, v_g5, v_now);
+        ('GER', 'Germany Olympic', 30, 1, ARRAY['1','2','3','5'], v_org_id, v_g5, v_now)
+    ON CONFLICT (code, organization_id) DO NOTHING;
 
     -- ========================================================================
     -- 8. UNIFORMS — Apparel & Assets
@@ -124,7 +126,8 @@ BEGIN
         ('Monaco Polo Shirt', 'S, M, L, XL, XXL', 25, 20, 'HEALTHY', v_org_id, v_g2, v_now),
         ('Japan Track Suit', 'XS, S, M, L, XL', 50, 48, 'LOW_STOCK', v_org_id, v_g3, v_now),
         ('Brazil T-Shirt Kit', 'S, M, L, XL, XXL', 45, 30, 'HEALTHY', v_org_id, v_g4, v_now),
-        ('Germany Team Vest', 'M, L, XL', 35, 35, 'OUT_OF_STOCK', v_org_id, v_g5, v_now);
+        ('Germany Team Vest', 'M, L, XL', 35, 35, 'OUT_OF_STOCK', v_org_id, v_g5, v_now)
+    ON CONFLICT (item_name, organization_id) DO NOTHING;
 
     -- ========================================================================
     -- 9. LAUNDRY — Bags & Processing

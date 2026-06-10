@@ -28,6 +28,7 @@ import AuditLog from './pages/AuditLog';
 import ClientPortal from './pages/ClientPortal';
 import Profile from './pages/Profile';
 import MyGroup from './pages/MyGroup';
+import GroupsManagement from './pages/GroupsManagement';
 
 export default function App() {
   return (
@@ -60,6 +61,7 @@ export default function App() {
               <Route path="/app/portal" element={<ClientPortal />} />
               <Route path="/app/profil" element={<Profile />} />
               <Route path="/app/mon-groupe" element={<MyGroup />} />
+              <Route path="/app/groupes" element={<GroupsManagement />} />
             </Route>
           </Route>
 

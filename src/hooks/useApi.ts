@@ -1175,3 +1175,99 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
 
   return { requests, loading, error, refresh: () => fetchRequests(1, statusFilter, moduleFilter), addRequest, updateRequest, deleteRequest, page, pageSize: DEFAULT_PAGE_SIZE, totalCount, goToPage };
 }
+
+// ============================================================================
+// Groups Management
+// ============================================================================
+export function useGroups() {
+  const [groups, setGroups] = useState<{ id: string; name: string; organization_id: string; member_count: number; created_at: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const { organizationId } = useAppStore();
+
+  const fetchGroups = async (p: number) => {
+    try {
+      setLoading(true);
+      const from = (p - 1) * DEFAULT_PAGE_SIZE;
+      const to = from + DEFAULT_PAGE_SIZE - 1;
+
+      // Fetch groups first
+      const query = supabase
+        .from('groups').select('*', { count: 'exact' }).is('deleted_at', null).order('name')
+        .range(from, to);
+      if (organizationId) query.eq('organization_id', organizationId);
+      const { data: rawGroups, count, error } = await query;
+      if (error) throw error;
+
+      // Enrich with member count
+      const enriched = await Promise.all((rawGroups || []).map(async (g) => {
+        const { count: memberCount } = await supabase
+          .from('profiles')
+          .select('id', { count: 'exact', head: true })
+          .eq('group_id', g.id)
+          .is('deleted_at', null);
+        return { ...g, member_count: memberCount || 0 };
+      }));
+
+      setGroups(enriched);
+      if (count !== null) setTotalCount(count);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An error occurred'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (organizationId) {
+      fetchGroups(1);
+    } else {
+      setGroups([]);
+      setLoading(false);
+    }
+  }, [organizationId]);
+
+  const goToPage = (p: number) => {
+    setPage(p);
+    fetchGroups(p);
+  };
+
+  const addGroup = async (name: string) => {
+    if (!organizationId) throw new Error('No organization context');
+    const { data, error } = await supabase
+      .from('groups')
+      .insert({ name, organization_id: organizationId })
+      .select()
+      .single();
+    if (error) throw error;
+    setGroups(prev => [...prev, { ...data, member_count: 0 }]);
+    setTotalCount(c => c + 1);
+    return data;
+  };
+
+  const updateGroup = async (id: string, name: string) => {
+    const { data, error } = await supabase
+      .from('groups')
+      .update({ name })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    setGroups(prev => prev.map(g => g.id === id ? { ...g, ...data, member_count: g.member_count } : g));
+    return data;
+  };
+
+  const deleteGroup = async (id: string) => {
+    const { error } = await supabase
+      .from('groups')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) throw error;
+    setGroups(prev => prev.filter(g => g.id !== id));
+    setTotalCount(c => Math.max(0, c - 1));
+  };
+
+  return { groups, loading, error, refresh: () => fetchGroups(1), addGroup, updateGroup, deleteGroup, page, pageSize: DEFAULT_PAGE_SIZE, totalCount, goToPage };
+}

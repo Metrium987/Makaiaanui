@@ -31,7 +31,8 @@
     "crm": "Clients & Prestataires",
     "settings": "Paramètres",
     "myGroup": "Mon Groupe",
-    "profile": "Profil"
+    "profile": "Profil",
+    "groups": "Groupes"
   },
   "dashboard": {
     "title": "Centre de Contrôle",
@@ -518,6 +519,27 @@
     "status": "Statut",
     "actions": "Actions",
     "noRecords": "Aucun enregistrement trouvé."
+  },
+  "groups": {
+    "title": "Groupes & Délégations",
+    "subtitle": "Gérez les groupes et délégations participants.",
+    "addGroup": "Ajouter un Groupe",
+    "editGroup": "Modifier le Groupe",
+    "createGroup": "Créer le Groupe",
+    "totalGroups": "Total Groupes",
+    "totalMembers": "Total Membres",
+    "avgMembers": "Moy. Membres/Groupe",
+    "listTitle": "Groupes",
+    "searchPlaceholder": "Rechercher un groupe...",
+    "noGroups": "Aucun groupe trouvé.",
+    "groupNameLabel": "Nom du Groupe / Délégation",
+    "error": "Échec du chargement des groupes",
+    "tableHeaders": {
+      "name": "Nom",
+      "members": "Membres",
+      "created": "Créé",
+      "actions": "Actions"
+    }
   },
   "groupSelect": {
     "label": "Groupe / Délégation",

@@ -9,6 +9,7 @@ interface AppState {
   session: Session | null;
   role: AppRole | null;
   organizationId: string | null;
+  groupId: string | null;
   isProfileLoading: boolean;
   language: string;
   setSession: (session: Session | null) => void;
@@ -22,6 +23,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   session: null,
   role: null,
   organizationId: null,
+  groupId: null,
   isProfileLoading: false,
   language: 'en',
   setLanguage: (lang) => set({ language: lang }),
@@ -38,24 +40,25 @@ export const useAppStore = create<AppState>((set, get) => ({
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('role, organization_id')
+        .select('role, organization_id, group_id')
         .eq('id', userId)
         .single();
       
       if (data && !error) {
         set({ 
           role: data.role as AppRole, 
-          organizationId: data.organization_id 
+          organizationId: data.organization_id,
+          groupId: data.group_id
         });
       } else {
         // Profile not found — SQL trigger on_auth_user_created should have created it.
         // If missing, log warning and set safe defaults rather than auto-creating with escalated privileges.
         console.warn('Profile not found for user', userId, '- SQL trigger may not have completed. Retrying on next session.');
-        set({ role: null, organizationId: null });
+        set({ role: null, organizationId: null, groupId: null });
       }
     } catch (err) {
       console.error('Error fetching profile:', err);
-      set({ role: null, organizationId: null });
+      set({ role: null, organizationId: null, groupId: null });
     } finally {
       set({ isProfileLoading: false });
     }

@@ -5,8 +5,7 @@ import { useAppStore } from '../../store/appStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import type { AppRole } from '../../types';
-import { cn } from '../../lib/utils';
-import { 
+import { cn } from '../../lib/utils';import {
   LayoutDashboard, 
   Car, 
   BedDouble, 
@@ -23,7 +22,8 @@ import {
   ClipboardList,
   Send,
   UserCircle,
-  Building2
+  Building2,
+  Flag
 } from 'lucide-react';
 
 const ALL_NAVIGATION = [
@@ -44,6 +44,7 @@ const ALL_NAVIGATION = [
   { name: 'portal.sidebar', href: '/app/portal', icon: Send, roles: ['MEMBER', 'MANAGER', 'FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'] as AppRole[] },
   { name: 'common.settings', href: '/app/settings', icon: Settings, roles: ['ADMIN'] as AppRole[] },
   { name: 'User Management', href: '/app/users', icon: Users, roles: ['ADMIN'] as AppRole[] },
+  { name: 'common.groups', href: '/app/groupes', icon: Flag, roles: ['BACK_OFFICE', 'ADMIN'] as AppRole[] },
 ];
 
 export function Sidebar() {

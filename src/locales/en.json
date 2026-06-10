@@ -31,7 +31,8 @@
     "crm": "Clients & Providers",
     "settings": "Settings",
     "myGroup": "My Group",
-    "profile": "Profile"
+    "profile": "Profile",
+    "groups": "Groups"
   },
   "dashboard": {
     "title": "Data Control Center",
@@ -518,6 +519,27 @@
     "status": "Status",
     "actions": "Actions",
     "noRecords": "No records found."
+  },
+  "groups": {
+    "title": "Groups & Delegations",
+    "subtitle": "Manage participating groups and delegations.",
+    "addGroup": "Add Group",
+    "editGroup": "Edit Group",
+    "createGroup": "Create Group",
+    "totalGroups": "Total Groups",
+    "totalMembers": "Total Members",
+    "avgMembers": "Avg Members/Group",
+    "listTitle": "Groups",
+    "searchPlaceholder": "Search groups...",
+    "noGroups": "No groups found.",
+    "groupNameLabel": "Group / Delegation Name",
+    "error": "Failed to load groups",
+    "tableHeaders": {
+      "name": "Group Name",
+      "members": "Members",
+      "created": "Created",
+      "actions": "Actions"
+    }
   },
   "groupSelect": {
     "label": "Group / Delegation",
