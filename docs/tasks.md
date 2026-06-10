@@ -119,9 +119,10 @@ makaiaanui/
 **Schéma :** n/a (filtrage frontend ou via query)  
 **Critère succès :** MEMBER voit UNIQUEMENT ses propres demandes. ADMIN/BACK_OFFICE voient tout.
 
-- [ ] MEMBER : `client_email` = email du user connecté
-- [ ] ADMIN : toutes les demandes de l'org
-- [ ] Tester sur Vercel
+- [x] MEMBER : filtre `created_by = auth.uid()` dans fetchRequests ✅
+- [x] ADMIN/BACK_OFFICE : toutes les demandes de l'org (pas de filtre) ✅
+- [x] TypeScript + build OK
+- [ ] Tester sur Vercel : MEMBER ne voit que ses demandes, ADMIN voit tout
 
 ---
 

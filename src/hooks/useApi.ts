@@ -1057,6 +1057,8 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
   const [totalCount, setTotalCount] = useState(0);
   const { organizationId } = useAppStore();
   const userId = useAppStore(s => s.session?.user?.id);
+  const role = useAppStore(s => s.role);
+  const isMember = role === 'MEMBER';
 
   const fetchRequests = async (p: number, status?: string, module?: string) => {
     try {
@@ -1069,6 +1071,7 @@ export function useClientRequests(statusFilter?: string, moduleFilter?: string) 
       if (organizationId) query = query.eq('organization_id', organizationId);
       if (status && status !== 'ALL') query = query.eq('status', status);
       if (module && module !== 'ALL') query = query.eq('module_type', module);
+      if (isMember && userId) query = query.eq('created_by', userId);
       const { data, count, error } = await query;
       if (error) throw error;
       setRequests(data || []);
