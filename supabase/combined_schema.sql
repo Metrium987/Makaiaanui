@@ -268,6 +268,7 @@ ALTER TABLE public.uniforms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.laundry_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.additional_services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.deliveries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.groups ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
 -- 5. ROW LEVEL SECURITY POLICIES
@@ -366,6 +367,12 @@ CREATE POLICY "Select organization deliveries" ON public.deliveries FOR SELECT
     USING (organization_id = get_user_org());
 CREATE POLICY "Front-office and Back-office manage deliveries" ON public.deliveries FOR ALL 
     USING (organization_id = get_user_org() AND get_user_role() IN ('FRONT_OFFICE', 'BACK_OFFICE', 'ADMIN'));
+
+-- Groups
+CREATE POLICY "Users can view org groups" ON public.groups FOR SELECT 
+    USING (organization_id = get_user_org());
+CREATE POLICY "Back-office and Admin manage groups" ON public.groups FOR ALL 
+    USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
 
 -- ============================================================================
 -- 6. AUTO-PROFILE TRIGGER (creates profile on signup)
@@ -525,7 +532,7 @@ BEGIN
       'organizations','profiles','activity_logs','providers','clients',
       'transport_shifts','transport_transfers','accommodation_rooms','catering_menus',
       'hospitality_packages','hospitality_guests','accreditations','uniforms',
-      'laundry_requests','additional_services','deliveries'
+      'laundry_requests','additional_services','deliveries','groups'
     ])
   LOOP
     EXECUTE format('DROP TRIGGER IF EXISTS trg_set_updated_at ON public.%I;', t);
@@ -588,5 +595,40 @@ CREATE POLICY "Admins can delete requests" ON public.client_requests
   FOR DELETE USING (organization_id = get_user_org() AND get_user_role() = 'ADMIN');
 
 -- ============================================================================
--- 10. DONE! Toutes les tables, policies, triggers, contraintes et indexes sont créés.
+-- 10. GROUPS — countries/delegations for athletes and participants
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS public.groups (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  organization_id UUID NOT NULL REFERENCES public.organizations(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_groups_org ON public.groups(organization_id);
+CREATE INDEX IF NOT EXISTS idx_groups_name ON public.groups(name);
+CREATE INDEX IF NOT EXISTS idx_groups_created_at ON public.groups(created_at DESC);
+
+-- Ensure table and columns exist on existing DB (idempotent)
+-- (CREATE TABLE IF NOT EXISTS already handles table creation;
+--  if adding columns later, use ALTER TABLE ADD COLUMN IF NOT EXISTS here)
+
+-- Auto-update trigger
+DROP TRIGGER IF EXISTS trg_set_updated_at ON public.groups;
+CREATE TRIGGER trg_set_updated_at BEFORE UPDATE ON public.groups FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- RLS
+ALTER TABLE public.groups ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view org groups" ON public.groups
+  FOR SELECT USING (organization_id = get_user_org());
+
+CREATE POLICY "Back-office and Admin manage groups" ON public.groups
+  FOR ALL USING (organization_id = get_user_org() AND get_user_role() IN ('BACK_OFFICE', 'ADMIN'));
+
+-- ============================================================================
+-- 11. DONE! Toutes les tables, policies, triggers, contraintes et indexes sont créés.
 -- ============================================================================

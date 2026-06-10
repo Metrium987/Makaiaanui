@@ -132,9 +132,12 @@ makaiaanui/
 **Schéma :** `groups(id, name, organization_id, created_at)`  
 **Critère succès :** La table existe sur Supabase, le schema est dans combined_schema.sql.
 
-- [ ] Ajouter `CREATE TABLE groups` dans combined_schema.sql
-- [ ] Indexes + RLS + trigger updated_at
-- [ ] Appliquer sur Supabase
+- [x] CREATE TABLE groups (id, name, organization_id, timestamps) ✅
+- [x] 3 indexes (org, name, created_at) ✅
+- [x] RLS: SELECT all org, ALL BACK_OFFICE+ADMIN ✅
+- [x] Trigger updated_at ✅
+- [x] 13 references dans combined_schema.sql (sections 4,5,8,10) ✅
+- [ ] Appliquer le CREATE TABLE sur Supabase (SQL Editor)
 
 ### P3.2 — Assignation groupe à la création de compte
 **Fichiers :** `src/pages/Login.tsx` (signUp), `supabase/combined_schema.sql` (trigger handle_new_user)  
