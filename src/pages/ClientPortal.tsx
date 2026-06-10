@@ -248,7 +248,7 @@ export default function ClientPortal() {
                         {isBackOffice && req.status === 'IN_PROGRESS' && (
                           <button type="button" onClick={() => handleComplete(req.id)} disabled={actionLoading} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors" title="Mark Complete"><Flag className="w-4 h-4" /></button>
                         )}
-                        {isBackOffice && (req.status === 'REJECTED' || req.status === 'COMPLETED') && (
+                        {currentUserRole === 'ADMIN' && (req.status === 'REJECTED' || req.status === 'COMPLETED') && (
                           <button type="button" onClick={() => handleDelete(req.id)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors" title="Delete"><X className="w-4 h-4" /></button>
                         )}
                       </div>

@@ -97,16 +97,22 @@ makaiaanui/
 **Schéma :** RLS `client_requests` — UPDATE pour BACK_OFFICE+ADMIN  
 **Critère succès :** Un ADMIN peut changer le statut PENDING → APPROVED ou REJECTED avec raison.
 
-- [ ] Interface approve/reject (boutons + champ raison)
-- [ ] Mise à jour du statut + `approved_by` + `approved_at` + `rejection_reason`
-- [ ] Tester sur Vercel
+- [x] Boutons Approve/Reject visibles pour BACK_OFFICE+ADMIN (isBackOffice) ✅
+- [x] handleApprove: status=APPROVED, approved_by=userId, approved_at=now ✅
+- [x] handleReject: status=REJECTED, rejection_reason ✅
+- [x] Bouton Delete corrigé : ADMIN uniquement (RLS cohérent)
+- [ ] Tester sur Vercel : BACK_OFFICE approuve/rejette une demande
 
 ### P2.3 — BACK_OFFICE change statuts (IN_PROGRESS → COMPLETED)
 **Schéma :** idem P2.2  
 **Critère succès :** BACK_OFFICE peut faire évoluer le statut après approbation.
 
-- [ ] Workflow statuts : APPROVED → IN_PROGRESS → COMPLETED
-- [ ] Tester sur Vercel
+- [x] handleStartProgress: APPROVED → IN_PROGRESS ✅
+- [x] handleComplete: IN_PROGRESS → COMPLETED ✅
+- [x] Boutons visibles pour BACK_OFFICE+ADMIN (isBackOffice) ✅
+- [x] RLS UPDATE autorise BACK_OFFICE+ADMIN ✅
+- [x] TypeScript + build OK
+- [ ] Tester sur Vercel : workflow complet PENDING→APPROVED→IN_PROGRESS→COMPLETED
 
 ### P2.4 — Filtrage demandes par rôle
 **Fichiers :** `src/pages/ClientPortal.tsx`  
