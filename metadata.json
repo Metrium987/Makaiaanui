@@ -1,0 +1,6 @@
+{
+  "name": "Makaiaanui",
+  "description": "Event logistics management platform for sports events",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

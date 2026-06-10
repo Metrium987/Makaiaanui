@@ -1,0 +1,22 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "dashboard": "Dashboard",
+    "transport": "Fleet & Transport",
+    "accommodation": "Accommodation",
+    "catering": "Catering",
+    "hospitalities": "Hospitalities",
+    "accreditations": "Accreditations",
+    "deliveries": "Deliveries",
+    "uniforms": "Uniforms",
+    "crm": "Clients & Providers",
+    "settings": "Settings",
+    "search": "Search..."
+  },
+  "dashboard": {
+    "title": "Data Control Center",
+    "subtitle": "Global overview of your logistics and live modular status."
+  }
+}
