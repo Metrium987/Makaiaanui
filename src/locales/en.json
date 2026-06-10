@@ -58,7 +58,9 @@
     "sendResetLink": "Send Reset Link",
     "sendingReset": "Sending...",
     "resetEmailSent": "Password reset link sent. Check your email inbox.",
-    "backToSignIn": "Back to Sign In"
+    "backToSignIn": "Back to Sign In",
+    "configError": "System configuration error. The application is not connected to the authentication server. Please contact your system administrator.",
+    "invalidCredentials": "Invalid login credentials. Please check your email and password."
   },
   "resetPassword": {
     "title": "Set New Password",
@@ -503,5 +505,12 @@
     "status": "Status",
     "actions": "Actions",
     "noRecords": "No records found."
+  },
+  "roles": {
+    "admin": "Admin",
+    "member": "Member",
+    "backOffice": "Back Office",
+    "frontOffice": "Front Office",
+    "unknown": "Unknown"
   }
 }

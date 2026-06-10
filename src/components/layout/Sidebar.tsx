@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../store/appStore';
 import { useAuth } from '../../contexts/AuthContext';
+import type { AppRole } from '../../types';
 import { cn } from '../../lib/utils';
 import { 
   LayoutDashboard, 
@@ -41,11 +42,19 @@ const navigation = [
 export function Sidebar() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { isSidebarOpen, toggleSidebar } = useAppStore();
+  const { isSidebarOpen, toggleSidebar, role } = useAppStore();
   const { user } = useAuth();
   
   const appName = import.meta.env.VITE_APP_NAME || 'Playground';
   const orgName = user?.email?.split('@')[1] || 'Playground Org';
+  
+  const ROLE_LABELS: Record<AppRole, string> = {
+    ADMIN: t('roles.admin', 'Admin'),
+    MEMBER: t('roles.member', 'Member'),
+    BACK_OFFICE: t('roles.backOffice', 'Back Office'),
+    FRONT_OFFICE: t('roles.frontOffice', 'Front Office'),
+  };
+  const roleLabel = role ? ROLE_LABELS[role] : t('roles.unknown', 'Unknown');
 
   return (
     <div className={cn(
@@ -94,7 +103,7 @@ export function Sidebar() {
             <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-xs">{orgName.slice(0, 2).toUpperCase()}</div>
             <div className="flex flex-col overflow-hidden">
               <span className="text-xs font-semibold text-slate-900 truncate">{orgName}</span>
-              <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest truncate">{t('auth.adminRole', 'Admin')}</span>
+              <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest truncate">{roleLabel}</span>
             </div>
           </div>
         </div>

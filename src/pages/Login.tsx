@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase, hasCredentials } from '../lib/supabase';
 import { ArrowRight, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +40,8 @@ export default function Login() {
 
         if (error) {
           setError(error.message);
+        } else if (!hasCredentials) {
+          setError(t('login.configError', 'System configuration error. The application is not connected to the authentication server. Please contact your system administrator.'));
         } else {
           setSuccessMsg(t('login.successSignUp', 'Account created successfully. You can now sign in.'));
           setIsSignUp(false);
@@ -56,6 +58,10 @@ export default function Login() {
           setError(error.message);
         } else if (data.session) {
           navigate('/app');
+        } else if (!hasCredentials) {
+          setError(t('login.configError', 'System configuration error. The application is not connected to the authentication server. Please contact your system administrator.'));
+        } else {
+          setError(t('login.invalidCredentials', 'Invalid login credentials. Please check your email and password.'));
         }
       }
     } catch (err) {
@@ -86,6 +92,8 @@ export default function Login() {
 
       if (error) {
         setError(error.message);
+      } else if (!hasCredentials) {
+        setError(t('login.configError', 'System configuration error. The application is not connected to the authentication server. Please contact your system administrator.'));
       } else {
         setSuccessMsg(t('login.resetEmailSent', 'Password reset link sent. Check your email inbox.'));
         setIsForgotPassword(false);
@@ -98,6 +106,10 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async () => {
+    if (!hasCredentials) {
+      setError(t('login.configError', 'System configuration error. The application is not connected to the authentication server. Please contact your system administrator.'));
+      return;
+    }
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',

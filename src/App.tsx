@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import AuthRedirector from './components/auth/AuthRedirector';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import AuthCallback from './pages/AuthCallback';
@@ -32,8 +33,8 @@ export default function App() {
       <Router>
         <Routes>
           {/* Public Vitrine */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<><AuthRedirector /><Landing /></>} />
+          <Route path="/login" element={<><AuthRedirector /><Login /></>} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
 

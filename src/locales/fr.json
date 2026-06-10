@@ -58,7 +58,9 @@
     "sendResetLink": "Envoyer le lien",
     "sendingReset": "Envoi en cours...",
     "resetEmailSent": "Lien de réinitialisation envoyé. Vérifiez votre boîte email.",
-    "backToSignIn": "Retour à la connexion"
+    "backToSignIn": "Retour à la connexion",
+    "configError": "Erreur de configuration système. L'application n'est pas connectée au serveur d'authentification. Veuillez contacter votre administrateur système.",
+    "invalidCredentials": "Identifiants invalides. Veuillez vérifier votre email et mot de passe."
   },
   "resetPassword": {
     "title": "Nouveau mot de passe",
@@ -503,5 +505,12 @@
     "status": "Statut",
     "actions": "Actions",
     "noRecords": "Aucun enregistrement trouvé."
+  },
+  "roles": {
+    "admin": "Admin",
+    "member": "Membre",
+    "backOffice": "Back Office",
+    "frontOffice": "Front Office",
+    "unknown": "Inconnu"
   }
 }
