@@ -157,7 +157,7 @@ export function useTransportShifts() {
     fetchShifts(p);
   };
 
-  const addShift = async (shift: { driver_name: string; vehicle: string; time?: string; status?: string; progress?: string }) => {
+  const addShift = async (shift: { driver_name: string; vehicle: string; time?: string; status?: string; progress?: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase.from('transport_shifts').insert({
       ...shift,
@@ -227,7 +227,7 @@ export function useTransportTransfers() {
     fetchTransfers(p);
   };
 
-  const addTransfer = async (transfer: { time: string; from_location: string; to_location: string; pax: number; assigned_driver?: string }) => {
+  const addTransfer = async (transfer: { time: string; from_location: string; to_location: string; pax: number; assigned_driver?: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase.from('transport_transfers').insert({
       ...transfer,
@@ -297,7 +297,7 @@ export function useAccommodationRooms() {
     fetchRooms(p);
   };
 
-  const addRoom = async (room: { guest_name: string; group_name: string; hotel_name: string; room_type: string; check_in_date?: string; status?: string }) => {
+  const addRoom = async (room: { guest_name: string; group_name: string; hotel_name: string; room_type: string; check_in_date?: string; status?: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('accommodation_rooms')
@@ -369,7 +369,7 @@ export function useDeliveries() {
     fetchDeliveries(p);
   };
 
-  const addDelivery = async (delivery: { site: string; status: string; scheduled_time: string; detail: string }) => {
+  const addDelivery = async (delivery: { site: string; status: string; scheduled_time: string; detail: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('deliveries')
@@ -445,7 +445,7 @@ export function useHospitalityPackages() {
     fetchPackages(p);
   };
 
-  const addPackage = async (pkg: { title: string; price: number; capacity: number; sold: number; total: number }) => {
+  const addPackage = async (pkg: { title: string; price: number; capacity: number; sold: number; total: number; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('hospitality_packages')
@@ -522,7 +522,7 @@ export function useHospitalityGuests() {
     fetchGuests(p);
   };
 
-  const addGuest = async (guestData: { section: string; guest: string; seat_num: string }) => {
+  const addGuest = async (guestData: { section: string; guest: string; seat_num: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('hospitality_guests')
@@ -585,7 +585,7 @@ export function useAccreditations() {
     fetchAccreditations(p);
   };
 
-  const addAccreditation = async (acc: { code: string; name: string; count: number; pending: number; zones: string[] }) => {
+  const addAccreditation = async (acc: { code: string; name: string; count: number; pending: number; zones: string[]; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('accreditations')
@@ -656,7 +656,7 @@ export function useUniforms() {
     fetchUniforms(p);
   };
 
-  const addUniform = async (uniform: { item_name: string; sizes: string; total: number; deployed: number; status?: string }) => {
+  const addUniform = async (uniform: { item_name: string; sizes: string; total: number; deployed: number; status?: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('uniforms')
@@ -727,7 +727,7 @@ export function useLaundryRequests() {
     fetchRequests(p);
   };
 
-  const addRequest = async (request: { client_name: string; group_name: string; service_type: string; items_count: number; status?: string }) => {
+  const addRequest = async (request: { client_name: string; group_name: string; service_type: string; items_count: number; status?: string; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('laundry_requests')
@@ -798,7 +798,7 @@ export function useAdditionalServices() {
     fetchServices(p);
   };
 
-  const addService = async (service: { title: string; service_type: string; price: number; sold_count: number; limit_count: number }) => {
+  const addService = async (service: { title: string; service_type: string; price: number; sold_count: number; limit_count: number; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { data, error } = await supabase
       .from('additional_services')
@@ -884,7 +884,7 @@ export function useCateringMenus() {
     fetchMenus(p);
   };
 
-  const addMenu = async (menu: { title: string; start_time: string; end_time: string; service_type: string; pax?: number; veg?: number; vgn?: number; gf?: number; halal?: number }) => {
+  const addMenu = async (menu: { title: string; start_time: string; end_time: string; service_type: string; pax?: number; veg?: number; vgn?: number; gf?: number; halal?: number; group_id?: string }) => {
     if (!organizationId) throw new Error('No organization context');
     const { pax, veg, vgn, gf, halal, title, ...rest } = menu;
     const { data, error } = await supabase
