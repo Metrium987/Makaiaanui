@@ -517,6 +517,10 @@
     "actions": "Actions",
     "noRecords": "Aucun enregistrement trouvé."
   },
+  "groupSelect": {
+    "label": "Groupe / Délégation",
+    "placeholder": "-- Choisissez un groupe --"
+  },
   "roles": {
     "admin": "Admin",
     "member": "Membre",

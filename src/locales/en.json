@@ -517,6 +517,10 @@
     "actions": "Actions",
     "noRecords": "No records found."
   },
+  "groupSelect": {
+    "label": "Group / Delegation",
+    "placeholder": "-- Select a group --"
+  },
   "roles": {
     "admin": "Admin",
     "member": "Member",
